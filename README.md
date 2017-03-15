@@ -18,23 +18,25 @@ Since the plugin hasn't been published, you will have to checkout and build the 
 ### Step 1: Include the plugin in your build
 
 Add the following to your `project/plugins.sbt`:
-
-    addSbtPlugin("com.github.daniel-shuy" % "sbt-liquibase-slick-codegen" % "0.1.0-SNAPSHOT")
+```scala
+addSbtPlugin("com.github.daniel-shuy" % "sbt-liquibase-slick-codegen" % "0.1.0-SNAPSHOT")
+```
 
 ### Step 2: Enable the plugin for your project
 
 Add the following to your `build.sbt`:
-
-    enablePlugins(SbtLiquibaseSlickCodegen)
+```scala
+enablePlugins(SbtLiquibaseSlickCodegen)
+```
 
 ### Step 3: Configure project settings for the plugin
 
 Minimal example:
+```scala
+enablePlugins(SbtLiquibaseSlickCodegen)
 
-    enablePlugins(SbtLiquibaseSlickCodegen)
-    
-    liquibaseSlickCodegenOutputPackage := "com.foo.bar"
-
+liquibaseSlickCodegenOutputPackage := "com.foo.bar"
+```
 This will create the Slick database schema code as `com.foo.bar.Tables.scala`
 
 ## Settings
@@ -61,8 +63,9 @@ Note that the `liquibaseChangelog` setting is shared among both plugins.
 
 ### Play Framework
 When using this plugin with Play Framework, remember to configure `liquibaseChangelog` to point to the correct path, eg.
-
-    liquibaseChangelog := file("conf/migrations/changelog.xml")
+```scala
+liquibaseChangelog := file("conf/migrations/changelog.xml")
+```
 
 Since we are using `Liquibase` instead of `Play Slick Evolutions`, it is recommended to use `Slick` standalone, instead of the `Play-Slick` module.
 
