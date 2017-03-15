@@ -62,12 +62,12 @@ The `sbt-liquibase` plugin can still be used as normal alongside `sbt-liquibase-
 Note that the `liquibaseChangelog` setting is shared among both plugins.
 
 ### Play Framework
-When using this plugin with Play Framework, remember to configure `liquibaseChangelog` to point to the correct path, eg.
+When using this plugin with [Play Framework](https://www.playframework.com/), remember to configure `liquibaseChangelog` to point to the correct path, eg.
 ```scala
 liquibaseChangelog := file("conf/migrations/changelog.xml")
 ```
 
-Since we are using `Liquibase` instead of `Play Slick Evolutions`, it is recommended to use `Slick` standalone, instead of the `Play-Slick` module.
+Since we are using [Liquibase](http://www.liquibase.org/) instead of [Play Slick Evolutions](https://www.playframework.com/documentation/latest/Evolutions) for Database Migration, it is recommended to use [Slick](http://slick.lightbend.com/) standalone, instead of the [play-slick](https://www.playframework.com/documentation/latest/PlaySlick) module, so that you are not bound to the version of Slick supported by play-slick.
 
 ### Multiple Liquibase changelog files
 You can have multiple Liquibase changelog files, then [include](http://www.liquibase.org/documentation/include.html) all of them in a "master" changelog file, then configure `liquibaseChangelog` to point to it.
