@@ -22,7 +22,6 @@ object SbtLiquibaseSlickCodegen extends AutoPlugin {
   val DbName: String = "sbt_liquibase_slick_codegen"
   val Username: String = ""
   val Password: String = Random.nextString(Random.nextInt(25))  // generate a random password
-  val SlickCodegenFileName: String = "Tables.scala" // this is hardcoded in Slick Codegen
   val CacheFileName: String = "sbt_liquibase-slick_codegen_cache"
 
   override def requires: Plugins = SbtLiquibase
@@ -33,6 +32,7 @@ object SbtLiquibaseSlickCodegen extends AutoPlugin {
     lazy val liquibaseSlickCodegen: TaskKey[File] = TaskKey("liquibase-slick-codegen", "Generate Slick database schema code from Liquibase changelog file")
 
     lazy val liquibaseSlickCodegenOutputPackage: SettingKey[String] = SettingKey("liquibase-slick-codegen-output-package", "Package the generated Slick database schema code should be placed in")
+    lazy val liquibaseSlickCodegenOutputClass: SettingKey[String] = SettingKey("liquibase-slick-codegen-output-class", "The class name for the generated Slick database schema code")
 
     lazy val liquibaseSlickCodegenSourceCodeGeneratorFactory: SettingKey[Model => SourceCodeGenerator] = SettingKey("liquibase-slick-codegen-source-code-generator-factory", "The factory for the SourceCodeGenerator to use to generate Slick database schema code")
   }
@@ -46,13 +46,17 @@ object SbtLiquibaseSlickCodegen extends AutoPlugin {
     (scalaSource in Compile).value
   }
 
+  private[this] lazy val slickCodegenFileName = Def.setting[String] {
+    s"${liquibaseSlickCodegenOutputClass.value}.scala"
+  }
+
   private[this] lazy val slickCodegenFile = Def.setting[File] {
-    slickCodegenDir.value / liquibaseSlickCodegenOutputPackage.value / SlickCodegenFileName
+    slickCodegenDir.value / liquibaseSlickCodegenOutputPackage.value / slickCodegenFileName.value
   }
 
   private[this] lazy val cacheDir = Def.setting[File] {
-    // create cache in configured package so that cache is invalidated if package is changed
-    target.value / CacheFileName / liquibaseSlickCodegenOutputPackage.value
+    // create cache in subfolders corresponding to configured package and class so that cache is invalidated if either is changed
+    target.value / CacheFileName / liquibaseSlickCodegenOutputPackage.value / liquibaseSlickCodegenOutputClass.value
   }
 
   /**
@@ -137,8 +141,14 @@ object SbtLiquibaseSlickCodegen extends AutoPlugin {
     }
     codegenFuture.onComplete(_ => db.close)
 
-    // TODO: replace package with a new setting
-    codegenFuture.map(codegen => codegen.writeToFile(classOf[H2Driver].getName, slickCodegenDir.value.getPath, liquibaseSlickCodegenOutputPackage.value))
+    // TODO: replace profile with a new setting
+    codegenFuture.map(codegen => codegen.writeToFile(
+      classOf[H2Driver].getName,
+      slickCodegenDir.value.getPath,
+      liquibaseSlickCodegenOutputPackage.value,
+      liquibaseSlickCodegenOutputClass.value,
+      slickCodegenFileName.value
+    ))
   }
 
   override lazy val projectSettings: Seq[Setting[_]] =
@@ -174,6 +184,8 @@ object SbtLiquibaseSlickCodegen extends AutoPlugin {
       liquibaseUrl := "",
       liquibaseUsername := "",
       liquibasePassword := "",
+
+      liquibaseSlickCodegenOutputClass := "Tables",
 
       // default to bundled SourceCodeGenerator
       liquibaseSlickCodegenSourceCodeGeneratorFactory := {
