@@ -1,4 +1,4 @@
-package com.github.daniel.shuy
+package com.github.daniel.shuy.liquibase.slick.codegen
 
 import slick.model.Model
 

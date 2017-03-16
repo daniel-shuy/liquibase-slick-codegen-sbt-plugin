@@ -1,14 +1,14 @@
-package com.github.daniel.shuy
+package com.github.daniel.shuy.liquibase.slick.codegen
 
 import java.io.IOException
-import java.nio.file.{FileVisitResult, Files, Path, SimpleFileVisitor}
 import java.nio.file.attribute.BasicFileAttributes
+import java.nio.file.{FileVisitResult, Files, Path, SimpleFileVisitor}
 
-import com.github.sbtliquibase.SbtLiquibase
-import sbt._
-import Keys._
 import com.github.sbtliquibase.Import._
+import com.github.sbtliquibase.SbtLiquibase
 import org.h2.tools.DeleteDbFiles
+import sbt.Keys._
+import sbt._
 import slick.driver.H2Driver
 import slick.model.Model
 
