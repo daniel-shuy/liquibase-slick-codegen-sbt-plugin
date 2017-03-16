@@ -10,11 +10,15 @@ import slick.codegen.SourceCodeGenerator
 import Keys._
 import com.github.sbtliquibase.Import._
 import org.h2.tools.DeleteDbFiles
+import slick.driver.H2Driver
+import slick.model.Model
 
-import scala.util.Random
+import scala.concurrent.duration.Duration
+import scala.concurrent.{Await, ExecutionContext, Future}
+import scala.util.{Failure, Random, Success}
 
 object SbtLiquibaseSlickCodegen extends AutoPlugin {
-  val SlickDriver: String = classOf[slick.driver.H2Driver].getName
+  val SlickDriver = H2Driver
   val JdbcDriver: String = classOf[org.h2.Driver].getName
   val DbName: String = "sbt_liquibase_slick_codegen"
   val Username: String = ""
@@ -30,6 +34,8 @@ object SbtLiquibaseSlickCodegen extends AutoPlugin {
     lazy val liquibaseSlickCodegen: TaskKey[File] = TaskKey("liquibase-slick-codegen", "Generate Slick database schema code from Liquibase changelog file")
 
     lazy val liquibaseSlickCodegenOutputPackage: SettingKey[String] = SettingKey("liquibase-slick-codegen-output-package", "Package the generated Slick database schema code should be placed in")
+
+    lazy val liquibaseSlickCodegenSourceCodeGeneratorFactory: SettingKey[Model => SourceCodeGenerator] = SettingKey("liquibase-slick-codegen-source-code-generator-factory", "The factory for the SourceCodeGenerator to use to generate Slick database schema code")
   }
   import autoImport._
 
@@ -113,6 +119,29 @@ object SbtLiquibaseSlickCodegen extends AutoPlugin {
     }
   }
 
+  private[this] implicit val ec = ExecutionContext.global
+
+  private[this] lazy val slickCodegen = Def.task[Future[Unit]] {
+    // prevent Slick Codegen from creating database if it doesn't exist
+    val url = s"${(liquibaseUrl in LiquibaseSlickCodegen).value};IFEXISTS=TRUE"
+
+    val dbFactory = SlickDriver.api.Database
+    val db = dbFactory.forURL(url, Username, Password, driver = JdbcDriver, keepAliveConnection = true)
+
+    val modelAction = SlickDriver.createModel().withPinnedSession
+    val modelFuture = db.run(modelAction)
+
+    val codegenFuture = modelFuture.map(model => liquibaseSlickCodegenSourceCodeGeneratorFactory.value.apply(model))
+    codegenFuture.onComplete {
+      case Success(_) => logger.value.info(s"Slick Codegen: Successfully generated database schema code at ${slickCodegenFile.value.getPath}")
+      case Failure(t) => logger.value.error(t.getStackTraceString)
+    }
+    codegenFuture.onComplete(_ => db.close)
+
+    // TODO: replace package with a new setting
+    codegenFuture.map(codegen => codegen.writeToFile(classOf[H2Driver].getName, slickCodegenDir.value.getPath, liquibaseSlickCodegenOutputPackage.value))
+  }
+
   override lazy val projectSettings: Seq[Setting[_]] =
     inConfig(LiquibaseSlickCodegen)(SbtLiquibase.liquibaseBaseSettings(LiquibaseSlickCodegen) ++
       Seq(
@@ -147,19 +176,23 @@ object SbtLiquibaseSlickCodegen extends AutoPlugin {
       liquibaseUsername := "",
       liquibasePassword := "",
 
+      // default to Slick Codegen's bundled SourceCodeGenerator
+      liquibaseSlickCodegenSourceCodeGeneratorFactory := {
+        model: Model => new SourceCodeGenerator(model)
+      },
+
       liquibaseSlickCodegen := Def.taskDyn {
         (liquibaseUpdate in LiquibaseSlickCodegen).value
 
         Def.task {
           Def.taskDyn {
-            // prevent Slick Codegen from creating database if it doesn't exist
-            val url = s"${(liquibaseUrl in LiquibaseSlickCodegen).value};IFEXISTS=TRUE"
-
-            SourceCodeGenerator.run(SlickDriver, JdbcDriver, url, slickCodegenDir.value.getPath, liquibaseSlickCodegenOutputPackage.value, Some(Username), Some(Password))
-
-            logger.value.info(s"Slick Codegen: Successfully generated database schema code at ${slickCodegenFile.value.getPath}")
-
-            updateCache
+            Await.result(
+              Await.ready(slickCodegen.value, Duration.Inf) map {
+                // update cache with newly generated database schema code file
+                _ => updateCache
+              },
+              Duration.Inf
+            )
           }.value
 
           slickCodegenFile.value
