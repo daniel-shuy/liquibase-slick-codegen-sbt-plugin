@@ -46,7 +46,8 @@ object SbtLiquibaseSlickCodegen extends AutoPlugin {
   }
 
   private[this] lazy val cacheDir = Def.setting[File] {
-    target.value / CacheFileName
+    // create cache in configured package so that cache is invalidated if package is changed
+    target.value / CacheFileName / liquibaseSlickCodegenOutputPackage.value
   }
 
   /**
