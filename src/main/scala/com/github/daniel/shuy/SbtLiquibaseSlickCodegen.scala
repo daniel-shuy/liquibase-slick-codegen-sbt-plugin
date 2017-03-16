@@ -6,7 +6,6 @@ import java.nio.file.attribute.BasicFileAttributes
 
 import com.github.sbtliquibase.SbtLiquibase
 import sbt._
-import slick.codegen.SourceCodeGenerator
 import Keys._
 import com.github.sbtliquibase.Import._
 import org.h2.tools.DeleteDbFiles
@@ -176,7 +175,7 @@ object SbtLiquibaseSlickCodegen extends AutoPlugin {
       liquibaseUsername := "",
       liquibasePassword := "",
 
-      // default to Slick Codegen's bundled SourceCodeGenerator
+      // default to bundled SourceCodeGenerator
       liquibaseSlickCodegenSourceCodeGeneratorFactory := {
         model: Model => new SourceCodeGenerator(model)
       },
