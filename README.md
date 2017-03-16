@@ -49,7 +49,7 @@ This will create the Slick database schema code as `com.foo.bar.Tables.scala`
 | liquibaseSlickCodegenOutputPackage          | __Required__. Package the generated Slick database schema code should be created in.                                                                                                                                                |
 | liquibaseSlickCodegenOutputClass            | __Optional__. The class name for the generated Slick database schema code, without the `.scala` extension. Defaults to `Tables`.                                                                                                    |
 | liquibaseSlickCodegenProfile                | __Optional__. The Slick database profile for the generated Slick database schema code. __This should be substituted with the Slick driver implementation for the database you intend to use.__ Defaults to `slick.driver.H2Driver`. |
-| liquibaseSlickCodegenSourceGeneratorFactory | __Optional__. The factory for the SourceCodeGenerator implementation. See Slick Codegen customization. Defaults to the bundled SourceCodeGenerator.                                                                            |
+| liquibaseSlickCodegenSourceGeneratorFactory | __Optional__. The factory for the SourceCodeGenerator implementation. See [Slick Codegen customization](#slick-codegen-customization). Defaults to the bundled SourceCodeGenerator.                                                                            |
 
 ## Tasks
 
