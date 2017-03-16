@@ -9,7 +9,7 @@ import com.github.sbtliquibase.SbtLiquibase
 import org.h2.tools.DeleteDbFiles
 import sbt.Keys._
 import sbt._
-import slick.driver.H2Driver
+import slick.driver.{H2Driver, JdbcProfile}
 import slick.model.Model
 
 import scala.concurrent.duration.Duration
@@ -33,6 +33,8 @@ object SbtLiquibaseSlickCodegen extends AutoPlugin {
 
     lazy val liquibaseSlickCodegenOutputPackage: SettingKey[String] = SettingKey("liquibase-slick-codegen-output-package", "Package the generated Slick database schema code should be placed in")
     lazy val liquibaseSlickCodegenOutputClass: SettingKey[String] = SettingKey("liquibase-slick-codegen-output-class", "The class name for the generated Slick database schema code")
+
+    lazy val liquibaseSlickCodegenProfile: SettingKey[JdbcProfile] = SettingKey("liquibase-slick-codegen-profile", "The Slick database profile for the generated Slick database schema code")
 
     lazy val liquibaseSlickCodegenSourceCodeGeneratorFactory: SettingKey[Model => SourceCodeGenerator] = SettingKey("liquibase-slick-codegen-source-code-generator-factory", "The factory for the SourceCodeGenerator to use to generate Slick database schema code")
   }
@@ -140,15 +142,20 @@ object SbtLiquibaseSlickCodegen extends AutoPlugin {
       case Failure(t) => logger.value.error(t.getStackTraceString)
     }
     codegenFuture.onComplete(_ => db.close)
-
-    // TODO: replace profile with a new setting
     codegenFuture.map(codegen => codegen.writeToFile(
-      classOf[H2Driver].getName,
+      liquibaseSlickCodegenProfile.value.getClass.singletonUnderlyingClassName,
       slickCodegenDir.value.getPath,
       liquibaseSlickCodegenOutputPackage.value,
       liquibaseSlickCodegenOutputClass.value,
       slickCodegenFileName.value
     ))
+  }
+
+  private[this] implicit class ClassUtils(clazz: Class[_]) {
+    private val TrailingDollar = "\\$$".r.pattern
+
+    // removes the trailing dollar sign from a Singleton Object's class name to obtain the actual underlying Class name
+    def singletonUnderlyingClassName: String = TrailingDollar.matcher(clazz.getName).replaceFirst("")
   }
 
   override lazy val projectSettings: Seq[Setting[_]] =
@@ -186,6 +193,8 @@ object SbtLiquibaseSlickCodegen extends AutoPlugin {
       liquibasePassword := "",
 
       liquibaseSlickCodegenOutputClass := "Tables",
+
+      liquibaseSlickCodegenProfile := H2Driver,
 
       // default to bundled SourceCodeGenerator
       liquibaseSlickCodegenSourceCodeGeneratorFactory := {
