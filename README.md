@@ -10,8 +10,7 @@ It is skipped on subsequent runs if the Liquibase changelog file hasn't been mod
 
 Since the plugin hasn't been published, you will have to checkout and build the project yourself:
 1. Clone/Checkout Repository: `git clone https://github.com/daniel-shuy/liquibase-slick-codegen-sbt-plugin.git`
-2. Build the project: `sbt compile`
-3. Publish the JAR file to your local Ivy cache: `sbt publishLocal`
+2. Build and publish the JAR file to your local Ivy cache: `sbt publishLocal`
 
 ## Usage
 
