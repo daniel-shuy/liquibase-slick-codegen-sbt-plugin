@@ -183,8 +183,13 @@ object SbtLiquibaseSlickCodegen extends AutoPlugin {
       )
     ) ++
     Seq(
-      // read version of H2 library from Manifest
-      libraryDependencies += "com.h2database" % "h2" % classOf[org.h2.Driver].getPackage.getImplementationVersion,
+      libraryDependencies ++= Seq(
+        // read version of Slick library from Slick Codegen's Manifest (Slick's Manifest does not have Implementation-Version)
+        "com.typesafe.slick" %% "slick" % classOf[slick.codegen.SourceCodeGenerator].getPackage.getImplementationVersion,
+
+        // read version of H2 library from Manifest
+        "com.h2database" % "h2" % classOf[org.h2.Driver].getPackage.getImplementationVersion
+      ),
 
       // stub out required Liquibase settings to make them optional
       liquibaseDriver := "",
