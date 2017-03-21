@@ -4,12 +4,26 @@
 # liquibase-slick-codegen-sbt-plugin
 A SBT plugin that uses [sbt-liquibase](https://github.com/sbtliquibase/sbt-liquibase-plugin) and [Slick Codegen](http://slick.lightbend.com/doc/3.1.1/code-generation.html) to generate Slick database schema code from a Liquibase changelog file.
 
-The database schema code is generated in the Source folder, in the configured package, with the configured class name.
+The database schema code is generated in the Source folder (because the generated Slick database schema code should be under version control), in the configured package, with the configured class name.
 
 The plugin attaches itself to the `compile` phase, and will run before the compilation takes place (the generated Slick database schema code will be compiled as well).
 It is skipped on subsequent runs if the Liquibase changelog file hasn't been modified, and the Slick database schema code file hasn't been deleted.
 
 __Warning:__ This plugin currently depends on an experimental feature in Slick Codegen. This plugin uses the [H2 Database](http://www.h2database.com/html/main.html) to generate the Slick database schema code. Currently, using a different database profile from the one used to generate the database schema code is considered experimental and is not officially supported by Slick.
+
+## Limitations
+Because the plugin uses the Liquibase changelog file to create tables in a temporary H2 database, there are some limitations when configuring the Liquibase changelog file. If possible, avoid using them. If not, refer below for the workarounds. Make sure to test the generated Slick database schema code thoroughly.
+
+### Database-specific Preconditions
+If a [\<dbms> precondition](http://www.liquibase.org/documentation/preconditions.html#ltdbmsgt) with a database other than H2 is used, add `<dbms type="h2" />` as well.
+
+### Unsupported Changes
+If a [change](http://www.liquibase.org/documentation/changes/index.html) that isn't supported by H2 (eg. [\<renameView>](http://www.liquibase.org/documentation/changes/rename_view.html)) is used, add corresponding [SQL](http://www.liquibase.org/documentation/changes/sql.html) or a combination of changes to achieve the same result, with the `<dbms type="h2" />` precondition.
+
+Eg. for `<renameView>`, use [\<dropView>](http://www.liquibase.org/documentation/changes/drop_view.html) and [\<createView>](http://www.liquibase.org/documentation/changes/create_view.html) to achieve the same result.
+
+### Database-specific SQL
+If database-specific SQL is used with [\<sql>](http://www.liquibase.org/documentation/changes/sql.html), add a [\<dbms> precondition](http://www.liquibase.org/documentation/preconditions.html#ltdbmsgt) to limit it to the database type that supports it, then add corresponding SQL for H2 that achieves the same result in a `<sql>` change, with the `<dbms type="h2" />` precondition.
 
 ## Installation
 
