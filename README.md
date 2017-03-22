@@ -126,7 +126,7 @@ then in `build.sbt`, assign the constructor as the `liquibaseSlickCodegenSourceC
 liquibaseSlickCodegenSourceCodeGeneratorFactory := (model => new CustomSourceCodeGenerator(model))
 ```
 
-# Licence
+## Licence
 
 Copyright 2017 Daniel Shuy
 
