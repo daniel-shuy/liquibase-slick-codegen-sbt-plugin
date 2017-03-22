@@ -47,7 +47,13 @@ Add the following to your `build.sbt`:
 enablePlugins(SbtLiquibaseSlickCodegen)
 ```
 
-### Step 3: Configure project settings for the plugin
+### Step 3: Create the Liquibase changelog file
+
+See http://www.liquibase.org/documentation/databasechangelog.html
+
+### Step 4: Configure project settings for the plugin
+
+See [Settings](##settings)
 
 Minimal example:
 ```scala
@@ -57,6 +63,10 @@ liquibaseSlickCodegenOutputPackage := "com.foo.bar"
 liquibaseSlickCodegenOutputClass := "Tables"
 ```
 This will create the Slick database schema code as `com.foo.bar.Tables.scala`
+
+### Step 5: Execute the plugin
+
+Run `sbt compile` or `sbt liquibase-slick-codegen` to generate the Slick database schema code.
 
 ## Settings
 
