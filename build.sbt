@@ -10,8 +10,6 @@ licenses := Seq("Apache License, Version 2.0" -> url("http://www.apache.org/lice
 
 homepage := Some(url("https://github.com/daniel-shuy/liquibase-slick-codegen-sbt-plugin"))
 
-scalaVersion := "2.10.6"
-
 addSbtPlugin("com.github.sbtliquibase" % "sbt-liquibase" % "0.2.0")
 
 libraryDependencies ++= Seq(
