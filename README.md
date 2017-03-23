@@ -53,7 +53,7 @@ See http://www.liquibase.org/documentation/databasechangelog.html
 
 ### Step 4: Configure project settings for the plugin
 
-See [Settings](#settings)
+See [Settings](#settings).
 
 Minimal example:
 ```scala
