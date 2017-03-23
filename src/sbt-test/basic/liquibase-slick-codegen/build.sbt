@@ -1,9 +1,11 @@
+import com.github.daniel.shuy.sbt.scripted.scalatest.SbtScriptedScalaTest.FullStacks
+import com.github.daniel.shuy.sbt.scripted.scalatest.ScriptedScalaTestSuiteMixin
+import org.scalatest.WordSpec
+
 import scala.util.Random
 
 // scala identifiers must begin with an alphabet
 def randomIdentifierName = Random.alphanumeric.dropWhile(_.isDigit).take(Random.nextInt(10) + 1).mkString
-
-lazy val checkSlickDatabaseSchemaCodeExists: TaskKey[Unit] = TaskKey("check-slick-database-schema-code-exists")
 
 lazy val testBasicLiquibaseSlickCodegen = project
   .in(file("."))
@@ -15,10 +17,19 @@ lazy val testBasicLiquibaseSlickCodegen = project
 
     liquibaseChangelog := file("changelog.xml"),
 
-    checkSlickDatabaseSchemaCodeExists := {
-      val slickCodegenFile = (scalaSource in Compile).value / liquibaseSlickCodegenOutputPackage.value / s"${liquibaseSlickCodegenOutputClass.value}.scala"
+    scriptedScalaTestStacks := FullStacks,
+    scriptedScalaTestSpec := Some(new WordSpec with ScriptedScalaTestSuiteMixin {
+      override val sbtState: State = state.value
 
-      assert(slickCodegenFile.exists, s"Slick database schema code file not found at ${slickCodegenFile.getPath}")
-    }
+      "liquibase-slick-codegen" should {
+        "generate Slick database schema code" in {
+          val slickCodegenFile = (scalaSource in Compile).value / liquibaseSlickCodegenOutputPackage.value / s"${liquibaseSlickCodegenOutputClass.value}.scala"
+
+          Project.runTask(compile, state.value)
+
+          assert(slickCodegenFile.exists(), s"$slickCodegenFile not found")
+        }
+      }
+    })
   )
   .enablePlugins(SbtLiquibaseSlickCodegen)

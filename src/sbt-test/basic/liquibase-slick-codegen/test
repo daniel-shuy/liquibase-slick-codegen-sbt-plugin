@@ -1,3 +1,1 @@
-> liquibase-slick-codegen
-# check if Slick database schema code generated
-> check-slick-database-schema-code-exists
+> scripted-scalatest

@@ -1,5 +1,1 @@
-> compile
-# check if Slick database schema code generated
-> check-slick-database-schema-code-exists
-# check if compiled Slick database schema code generated
-> check-compiled-slick-database-schema-code-exists
+> scripted-scalatest
