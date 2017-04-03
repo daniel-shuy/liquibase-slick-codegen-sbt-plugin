@@ -3,6 +3,7 @@ package com.github.daniel.shuy.liquibase.slick.codegen
 import java.io.IOException
 import java.nio.file.attribute.BasicFileAttributes
 import java.nio.file.{FileVisitResult, Files, Path, SimpleFileVisitor}
+import java.security.SecureRandom
 
 import com.github.sbtliquibase.Import._
 import com.github.sbtliquibase.SbtLiquibase
@@ -17,11 +18,13 @@ import scala.concurrent.{Await, ExecutionContext, Future}
 import scala.util.{Failure, Random, Success}
 
 object SbtLiquibaseSlickCodegen extends AutoPlugin {
+  private[this] val random = new Random(new SecureRandom())
+
   val SlickDriver = H2Driver
   val JdbcDriver: String = classOf[org.h2.Driver].getName
   val DbName: String = "sbt_liquibase_slick_codegen"
   val Username: String = ""
-  val Password: String = Random.nextString(Random.nextInt(25))  // generate a random password
+  val Password: String = random.nextString(random.nextInt(25))  // generate a random password
   val CacheFileName: String = "sbt_liquibase-slick_codegen_cache"
 
   override def requires: Plugins = SbtLiquibase
