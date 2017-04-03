@@ -25,19 +25,13 @@ Eg. for `<renameView>`, use [\<dropView>](http://www.liquibase.org/documentation
 ### Database-specific SQL
 If database-specific SQL is used with [\<sql>](http://www.liquibase.org/documentation/changes/sql.html), add a [\<dbms> precondition](http://www.liquibase.org/documentation/preconditions.html#ltdbmsgt) to limit it to the database type that supports it, then add corresponding SQL for H2 that achieves the same result in a `<sql>` change, with the `<dbms type="h2" />` precondition.
 
-## Installation
-
-Since the plugin hasn't been published, you will have to checkout and build the project yourself:
-1. Clone/Checkout Repository: `git clone https://github.com/daniel-shuy/liquibase-slick-codegen-sbt-plugin.git`
-2. Build and publish the JAR file to your local Ivy cache: `sbt publishLocal`
-
 ## Usage
 
 ### Step 1: Include the plugin in your build
 
 Add the following to your `project/plugins.sbt`:
 ```scala
-addSbtPlugin("com.github.daniel-shuy" % "sbt-liquibase-slick-codegen" % "0.1.0-SNAPSHOT")
+addSbtPlugin("com.github.daniel-shuy" % "sbt-liquibase-slick-codegen" % "0.1.0")
 ```
 
 ### Step 2: Enable the plugin for your project
