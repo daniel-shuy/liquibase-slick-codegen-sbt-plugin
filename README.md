@@ -9,7 +9,7 @@ The database schema code is generated in the Source folder (because the generate
 The plugin attaches itself to the `compile` phase, and will run before the compilation takes place (the generated Slick database schema code will be compiled as well).
 It is skipped on subsequent runs if the Liquibase changelog file hasn't been modified, and the Slick database schema code file hasn't been deleted.
 
-__Warning:__ This plugin currently depends on an experimental feature in Slick Codegen. This plugin uses the [H2 Database](http://www.h2database.com/html/main.html) to generate the Slick database schema code. Currently, using a different database profile from the one used to generate the database schema code is considered experimental and is not officially supported by Slick.
+__Warning:__ This plugin currently depends on an experimental feature in Slick Codegen. This plugin uses the [H2 Database](http://www.h2database.com/html/main.html) to generate the Slick database schema code. Currently, using a different database profile from the one used to generate the database schema code is considered experimental and is not officially supported by Slick (see http://slick.lightbend.com/doc/3.1.1/code-generation.html#generated-code for more information).
 
 ## Limitations
 Because the plugin uses the Liquibase changelog file to create tables in a temporary H2 database, there are some limitations when configuring the Liquibase changelog file. If possible, avoid using them. If not, refer below for the workarounds. Make sure to test the generated Slick database schema code thoroughly.
@@ -102,7 +102,7 @@ You can have multiple Liquibase changelog files, then [include](http://www.liqui
 
 
 ### Slick Codegen customization
-You can still perform [Slick Codegen customizations](http://slick.lightbend.com/doc/3.2.0/code-generation.html#customization) with this plugin.
+You can still perform [Slick Codegen customizations](http://slick.lightbend.com/doc/3.1.1/code-generation.html#customization) with this plugin.
 
 Create a class in `project` that extends `com.github.daniel.shuy.liquibase.slick.codegen.SourceCodeGenerator`, then override methods to customize Slick Codegen's behavior, eg.
 
