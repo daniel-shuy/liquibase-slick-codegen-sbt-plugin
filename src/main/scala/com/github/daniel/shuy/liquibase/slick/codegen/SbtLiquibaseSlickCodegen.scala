@@ -169,7 +169,7 @@ object SbtLiquibaseSlickCodegen extends AutoPlugin {
         // create an embedded database with Auto Mixed Mode
         // (Server is required for Liquibase and Slick Codegen to share a database, as both do not share the same Class Loader)
         // persist database to a file (Auto Mixed Mode cannot be used with in-memory databases)
-        liquibaseUrl := s"jdbc:h2:file:${target.value.getPath}/$DbName;AUTO_SERVER=TRUE",
+        liquibaseUrl := s"jdbc:h2:file:${target.value.getPath}/$DbName;AUTO_SERVER=TRUE;DATABASE_TO_UPPER=FALSE",
 
         liquibaseUsername := Username,
         liquibasePassword := Password,
