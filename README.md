@@ -125,7 +125,7 @@ liquibaseSlickCodegenSourceCodeGeneratorFactory := (model => new CustomSourceCod
 ### SBT 1.x
 This project depends on [sbt-liquibase](https://github.com/sbtliquibase/sbt-liquibase-plugin), which doesn't support SBT 1.x as of yet.
 
-If you would like this project to support SBT 1.x, please help to upvote this Issue (sbtliquibase/sbt-liquibase-plugin#17), or better yet, help open a Pull Request to update it to support SBT 1.x.
+If you would like this project to support SBT 1.x, please help to upvote this Issue (https://github.com/sbtliquibase/sbt-liquibase-plugin/issues/17), or better yet, help open a Pull Request to update it to support SBT 1.x.
 
 ## Licence
 
