@@ -88,7 +88,7 @@ object SbtLiquibaseSlickCodegen extends AutoPlugin {
 
     if (required) {
       // because it is impossible to check the cache without updating it, the cache may end up in a corrupted state if
-      // it the cache update is not performed (eg. interrupted due to RuntimeException).
+      // the cache update is not performed (eg. interrupted due to RuntimeException).
       // Workaround: delete the cache after comparison, if liquibase-slick-codegen is required.
       Def.task {
         deleteCache.value
