@@ -33,7 +33,7 @@ If database-specific SQL is used with [\<sql>](http://www.liquibase.org/document
 
 Add the following to your `project/plugins.sbt`:
 ```scala
-addSbtPlugin("com.github.daniel-shuy" % "sbt-liquibase-slick-codegen" % "0.1.0")
+addSbtPlugin("com.github.daniel-shuy" % "sbt-liquibase-slick-codegen" % "0.1.1")
 ```
 
 ### Step 2: Enable the plugin for your project
