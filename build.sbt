@@ -4,7 +4,7 @@ organization := "com.github.daniel-shuy"
 
 name := "sbt-liquibase-slick-codegen"
 
-version := "0.1.1"
+version := "0.1.2"
 
 licenses := Seq("Apache License, Version 2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0.txt"))
 
