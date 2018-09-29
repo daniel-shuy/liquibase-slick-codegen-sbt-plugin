@@ -10,7 +10,7 @@ import com.permutive.sbtliquibase.SbtLiquibase
 import org.h2.tools.DeleteDbFiles
 import sbt.Keys._
 import sbt._
-import slick.driver.{H2Driver, JdbcProfile}
+import slick.jdbc.{H2Profile, JdbcProfile}
 import slick.model.Model
 
 import scala.concurrent.duration.Duration
@@ -20,7 +20,7 @@ import scala.util.{Failure, Random, Success}
 object SbtLiquibaseSlickCodegen extends AutoPlugin {
   private[this] val random = new Random(new SecureRandom())
 
-  val SlickDriver = H2Driver
+  val SlickDriver = H2Profile
   val JdbcDriver: String = classOf[org.h2.Driver].getName
   val DbName: String = "sbt_liquibase_slick_codegen"
   val Username: String = ""
@@ -189,62 +189,62 @@ object SbtLiquibaseSlickCodegen extends AutoPlugin {
         }).value
       )
     ) ++
-      Seq(
-        libraryDependencies ++= Seq(
-          // read version of Slick library from Slick Codegen's Manifest (Slick's Manifest does not have Implementation-Version)
-          "com.typesafe.slick" %% "slick" % classOf[slick.codegen.SourceCodeGenerator].getPackage.getImplementationVersion,
+    Seq(
+      libraryDependencies ++= Seq(
+        // read version of Slick library from Slick Codegen's Manifest (Slick's Manifest does not have Implementation-Version)
+        "com.typesafe.slick" %% "slick" % classOf[slick.codegen.SourceCodeGenerator].getPackage.getImplementationVersion,
 
-          // read version of H2 library from Manifest
-          "com.h2database" % "h2" % classOf[org.h2.Driver].getPackage.getImplementationVersion
-        ),
+        // read version of H2 library from Manifest
+        "com.h2database" % "h2" % classOf[org.h2.Driver].getPackage.getImplementationVersion
+      ),
 
-        // stub out required Liquibase settings to make them optional
-        liquibaseDriver := "",
-        liquibaseUrl := "",
-        liquibaseUsername := "",
-        liquibasePassword := "",
+      // stub out required Liquibase settings to make them optional
+      liquibaseDriver := "",
+      liquibaseUrl := "",
+      liquibaseUsername := "",
+      liquibasePassword := "",
 
-        liquibaseSlickCodegenOutputClass := "Tables",
+      liquibaseSlickCodegenOutputClass := "Tables",
 
-        liquibaseSlickCodegenProfile := H2Driver,
+      liquibaseSlickCodegenProfile := H2Profile,
 
-        // default to bundled SourceCodeGenerator
-        liquibaseSlickCodegenSourceCodeGeneratorFactory := {
-          model: Model => new SourceCodeGenerator(model)
-        },
+      // default to bundled SourceCodeGenerator
+      liquibaseSlickCodegenSourceCodeGeneratorFactory := {
+        model: Model => new SourceCodeGenerator(model)
+      },
 
-        liquibaseSlickCodegen := Def.taskDyn {
-          (liquibaseUpdate in LiquibaseSlickCodegen).value
+      liquibaseSlickCodegen := Def.taskDyn {
+        (liquibaseUpdate in LiquibaseSlickCodegen).value
 
-          Def.task {
-            Def.taskDyn {
-              Await.result(
-                Await.ready(slickCodegen.value, Duration.Inf) map {
-                  // update cache with newly generated database schema code file
-                  _ => updateCache
-                },
-                Duration.Inf
-              )
-            }.value
+        Def.task {
+          Def.taskDyn {
+            Await.result(
+              Await.ready(slickCodegen.value, Duration.Inf) map {
+                // update cache with newly generated database schema code file
+                _ => updateCache
+              },
+              Duration.Inf
+            )
+          }.value
 
-            slickCodegenFile.value
-          }
-        }.value,
+          slickCodegenFile.value
+        }
+      }.value,
 
-        compile := Def.taskDyn {
-          if (requireLiquibaseSlickCodegen.value) {
-            logger.value.info("Executing liquibase-slick-codegen")
+      compile := Def.taskDyn {
+        if (requireLiquibaseSlickCodegen.value) {
+          logger.value.info("Executing liquibase-slick-codegen")
 
-            // execute liquibase-slick-codegen before each compile
-            Def.taskDyn {
-              liquibaseSlickCodegen.value
+          // execute liquibase-slick-codegen before each compile
+          Def.taskDyn {
+            liquibaseSlickCodegen.value
 
-              compile in Compile
-            }
-          }
-          else {
             compile in Compile
           }
-        }.value
-      )
+        }
+        else {
+          compile in Compile
+        }
+      }.value
+    )
 }
