@@ -110,8 +110,9 @@ object SbtLiquibaseSlickCodegen extends AutoPlugin {
   }
 
   private[this] lazy val deleteCache = Def.task[Unit] {
-    if (cacheDir.value.exists()) {
-      Files.walkFileTree(cacheDir.value.toPath, new SimpleFileVisitor[Path] {
+    val cacheDirValue = cacheDir.value
+    if (cacheDirValue.exists()) {
+      Files.walkFileTree(cacheDirValue.toPath, new SimpleFileVisitor[Path] {
         override def visitFile(file: Path, attrs: BasicFileAttributes): FileVisitResult = {
           val result = super.visitFile(file, attrs)
           Files.delete(file)
