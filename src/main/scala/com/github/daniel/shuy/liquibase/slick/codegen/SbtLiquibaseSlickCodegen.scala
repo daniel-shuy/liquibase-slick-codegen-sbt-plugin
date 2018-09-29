@@ -140,6 +140,9 @@ object SbtLiquibaseSlickCodegen extends AutoPlugin {
     val modelAction = SlickDriver.createModel().withPinnedSession
     val modelFuture = db.run(modelAction)
 
+    val slickCodegenDirValue = slickCodegenDir.value
+    val slickCodegenFileNameValue = slickCodegenFileName.value
+
     val codegenFuture = modelFuture.map(model => liquibaseSlickCodegenSourceCodeGeneratorFactory.value.apply(model))
     codegenFuture.onComplete {
       case Success(_) => logger.value.info(s"Slick Codegen: Successfully generated database schema code at ${slickCodegenFile.value.getPath}")
@@ -148,10 +151,10 @@ object SbtLiquibaseSlickCodegen extends AutoPlugin {
     codegenFuture.onComplete(_ => db.close)
     codegenFuture.map(codegen => codegen.writeToFile(
       liquibaseSlickCodegenProfile.value.getClass.singletonUnderlyingClassName,
-      slickCodegenDir.value.getPath,
+      slickCodegenDirValue.getPath,
       liquibaseSlickCodegenOutputPackage.value,
       liquibaseSlickCodegenOutputClass.value,
-      slickCodegenFileName.value
+      slickCodegenFileNameValue
     ))
   }
 
