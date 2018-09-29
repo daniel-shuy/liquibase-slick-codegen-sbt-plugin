@@ -5,8 +5,8 @@ import java.nio.file.attribute.BasicFileAttributes
 import java.nio.file.{FileVisitResult, Files, Path, SimpleFileVisitor}
 import java.security.SecureRandom
 
-import com.github.sbtliquibase.Import._
-import com.github.sbtliquibase.SbtLiquibase
+import com.permutive.sbtliquibase.Import._
+import com.permutive.sbtliquibase.SbtLiquibase
 import org.h2.tools.DeleteDbFiles
 import sbt.Keys._
 import sbt._
