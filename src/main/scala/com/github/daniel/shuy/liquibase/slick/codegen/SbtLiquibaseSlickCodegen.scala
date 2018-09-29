@@ -14,7 +14,7 @@ import slick.driver.{H2Driver, JdbcProfile}
 import slick.model.Model
 
 import scala.concurrent.duration.Duration
-import scala.concurrent.{Await, ExecutionContext, Future}
+import scala.concurrent.{Await, ExecutionContext, ExecutionContextExecutor, Future}
 import scala.util.{Failure, Random, Success}
 
 object SbtLiquibaseSlickCodegen extends AutoPlugin {
@@ -128,7 +128,7 @@ object SbtLiquibaseSlickCodegen extends AutoPlugin {
     }
   }
 
-  private[this] implicit val ec = ExecutionContext.global
+  private[this] implicit val ec: ExecutionContextExecutor = ExecutionContext.global
 
   private[this] lazy val slickCodegen = Def.task[Future[Unit]] {
     // prevent Slick Codegen from creating database if it doesn't exist
