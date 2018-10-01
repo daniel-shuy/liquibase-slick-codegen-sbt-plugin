@@ -23,9 +23,12 @@ lazy val testBasicLiquibaseSlickCodegen = project
     scriptedScalaTestSpec := Some(new WordSpec with ScriptedScalaTestSuiteMixin {
       override val sbtState: State = state.value
 
-      // suppress non-error logging during test
-      LoggerFactory.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME).asInstanceOf[Logger]
-        .setLevel(Level.ERROR)
+      // suppress non-error logging if logger core is logback
+      // (SBT 0.x provides logback as a transitive dependency)
+      LoggerFactory.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME) match {
+        case logbackLogger: Logger => logbackLogger.setLevel(Level.ERROR)
+        case _ =>
+      }
 
       "liquibase-slick-codegen" should {
         "generate Slick database schema code" in {
