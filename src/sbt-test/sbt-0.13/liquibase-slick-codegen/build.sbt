@@ -1,6 +1,8 @@
+import ch.qos.logback.classic.{Level, Logger}
 import com.github.daniel.shuy.sbt.scripted.scalatest.SbtScriptedScalaTest.FullStacks
 import com.github.daniel.shuy.sbt.scripted.scalatest.ScriptedScalaTestSuiteMixin
 import org.scalatest.WordSpec
+import org.slf4j.LoggerFactory
 
 import scala.util.Random
 
@@ -10,7 +12,7 @@ def randomIdentifierName = Random.alphanumeric.dropWhile(_.isDigit).take(Random.
 lazy val testBasicLiquibaseSlickCodegen = project
   .in(file("."))
   .settings(
-    name := "test/basic/liquibase-slick-codegen",
+    name := "test/sbt-0.13/liquibase-slick-codegen",
 
     liquibaseSlickCodegenOutputPackage := randomIdentifierName,
     liquibaseSlickCodegenOutputClass := randomIdentifierName,
@@ -20,6 +22,13 @@ lazy val testBasicLiquibaseSlickCodegen = project
     scriptedScalaTestStacks := FullStacks,
     scriptedScalaTestSpec := Some(new WordSpec with ScriptedScalaTestSuiteMixin {
       override val sbtState: State = state.value
+
+      // suppress non-error logging if logger core is logback
+      // (SBT 0.x provides logback as a transitive dependency)
+      LoggerFactory.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME) match {
+        case logbackLogger: Logger => logbackLogger.setLevel(Level.ERROR)
+        case _ =>
+      }
 
       "liquibase-slick-codegen" should {
         "generate Slick database schema code" in {

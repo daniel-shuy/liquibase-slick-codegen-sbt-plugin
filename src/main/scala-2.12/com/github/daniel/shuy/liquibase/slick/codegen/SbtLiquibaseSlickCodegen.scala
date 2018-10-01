@@ -5,22 +5,22 @@ import java.nio.file.attribute.BasicFileAttributes
 import java.nio.file.{FileVisitResult, Files, Path, SimpleFileVisitor}
 import java.security.SecureRandom
 
-import com.github.sbtliquibase.Import._
-import com.github.sbtliquibase.SbtLiquibase
+import com.permutive.sbtliquibase.Import._
+import com.permutive.sbtliquibase.SbtLiquibase
 import org.h2.tools.DeleteDbFiles
 import sbt.Keys._
 import sbt._
-import slick.driver.{H2Driver, JdbcProfile}
+import slick.jdbc.{H2Profile, JdbcProfile}
 import slick.model.Model
 
 import scala.concurrent.duration.Duration
-import scala.concurrent.{Await, ExecutionContext, Future}
+import scala.concurrent.{Await, ExecutionContext, ExecutionContextExecutor, Future}
 import scala.util.{Failure, Random, Success}
 
 object SbtLiquibaseSlickCodegen extends AutoPlugin {
   private[this] val random = new Random(new SecureRandom())
 
-  val SlickDriver = H2Driver
+  val SlickDriver = H2Profile
   val JdbcDriver: String = classOf[org.h2.Driver].getName
   val DbName: String = "sbt_liquibase_slick_codegen"
   val Username: String = ""
@@ -110,8 +110,9 @@ object SbtLiquibaseSlickCodegen extends AutoPlugin {
   }
 
   private[this] lazy val deleteCache = Def.task[Unit] {
-    if (cacheDir.value.exists()) {
-      Files.walkFileTree(cacheDir.value.toPath, new SimpleFileVisitor[Path] {
+    val cacheDirValue = cacheDir.value
+    if (cacheDirValue.exists()) {
+      Files.walkFileTree(cacheDirValue.toPath, new SimpleFileVisitor[Path] {
         override def visitFile(file: Path, attrs: BasicFileAttributes): FileVisitResult = {
           val result = super.visitFile(file, attrs)
           Files.delete(file)
@@ -127,7 +128,7 @@ object SbtLiquibaseSlickCodegen extends AutoPlugin {
     }
   }
 
-  private[this] implicit val ec = ExecutionContext.global
+  private[this] implicit val ec: ExecutionContextExecutor = ExecutionContext.global
 
   private[this] lazy val slickCodegen = Def.task[Future[Unit]] {
     // prevent Slick Codegen from creating database if it doesn't exist
@@ -139,6 +140,9 @@ object SbtLiquibaseSlickCodegen extends AutoPlugin {
     val modelAction = SlickDriver.createModel().withPinnedSession
     val modelFuture = db.run(modelAction)
 
+    val slickCodegenDirValue = slickCodegenDir.value
+    val slickCodegenFileNameValue = slickCodegenFileName.value
+
     val codegenFuture = modelFuture.map(model => liquibaseSlickCodegenSourceCodeGeneratorFactory.value.apply(model))
     codegenFuture.onComplete {
       case Success(_) => logger.value.info(s"Slick Codegen: Successfully generated database schema code at ${slickCodegenFile.value.getPath}")
@@ -147,10 +151,10 @@ object SbtLiquibaseSlickCodegen extends AutoPlugin {
     codegenFuture.onComplete(_ => db.close)
     codegenFuture.map(codegen => codegen.writeToFile(
       liquibaseSlickCodegenProfile.value.getClass.singletonUnderlyingClassName,
-      slickCodegenDir.value.getPath,
+      slickCodegenDirValue.getPath,
       liquibaseSlickCodegenOutputPackage.value,
       liquibaseSlickCodegenOutputClass.value,
-      slickCodegenFileName.value
+      slickCodegenFileNameValue
     ))
   }
 
@@ -202,7 +206,7 @@ object SbtLiquibaseSlickCodegen extends AutoPlugin {
 
       liquibaseSlickCodegenOutputClass := "Tables",
 
-      liquibaseSlickCodegenProfile := H2Driver,
+      liquibaseSlickCodegenProfile := H2Profile,
 
       // default to bundled SourceCodeGenerator
       liquibaseSlickCodegenSourceCodeGeneratorFactory := {
