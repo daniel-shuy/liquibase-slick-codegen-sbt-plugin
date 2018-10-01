@@ -11,7 +11,7 @@ def randomIdentifierName = Random.alphanumeric.dropWhile(_.isDigit).take(Random.
 lazy val testBasicCompile = project
   .in(file("."))
   .settings(
-    name := "test/basic/compile",
+    name := "test/sbt-0.13/compile",
 
     liquibaseSlickCodegenOutputPackage := randomIdentifierName,
     liquibaseSlickCodegenOutputClass := randomIdentifierName,
