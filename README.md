@@ -63,7 +63,7 @@ This will create the Slick database schema code as `com.foo.bar.Tables.scala`
 
 ### Step 5: Execute the plugin
 
-Run `sbt compile` or `sbt liquibase-slick-codegen` to generate the Slick database schema code.
+Run `sbt compile` or `sbt liquibaseSlickCodegen` to generate the Slick database schema code.
 
 ## Settings
 
@@ -77,9 +77,9 @@ Run `sbt compile` or `sbt liquibase-slick-codegen` to generate the Slick databas
 
 ## Tasks
 
-| Task                    | Description                                                                                                                                    |
-| ----------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
-| liquibase-slick-codegen | Forces the plugin to run, regardless of whether the Liquibase changelog file has been modified, or the Slick database schema code file exists. |
+| Task                  | Description                                                                                                                                    |
+| --------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| liquibaseSlickCodegen | Forces the plugin to run, regardless of whether the Liquibase changelog file has been modified, or the Slick database schema code file exists. |
 
 ## Notes
 
