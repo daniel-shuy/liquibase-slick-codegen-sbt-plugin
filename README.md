@@ -4,6 +4,9 @@
 [![Build Status](https://travis-ci.org/daniel-shuy/liquibase-slick-codegen-sbt-plugin.svg?branch=master)](https://travis-ci.org/daniel-shuy/liquibase-slick-codegen-sbt-plugin)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/840edcbf1cd3464ea1d4597362ad7588)](https://www.codacy.com/app/daniel-shuy/liquibase-slick-codegen-sbt-plugin?utm_source=github.com&utm_medium=referral&utm_content=daniel-shuy/liquibase-slick-codegen-sbt-plugin&utm_campaign=badger)
 
+| Plugin Version | SBT Version | Slick Version |
+| -------------- | ----------- | ------------- |
+| 0.1.x          | 0.13.x      | 3.x.x         |
 
 A SBT plugin that uses [sbt-liquibase](https://github.com/sbtliquibase/sbt-liquibase-plugin) and [Slick Codegen](http://slick.lightbend.com/doc/3.1.1/code-generation.html) to generate Slick database schema code from a Liquibase changelog file.
 
