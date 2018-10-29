@@ -60,6 +60,9 @@ object Dependencies {
 // project/plugins.sbt
 addSbtPlugin("com.github.daniel-shuy" % "sbt-liquibase-slick-codegen" % "0.1.1")
 libraryDependencies += "com.typesafe.slick" %% "slick-codegen" % Dependencies.slickVersion(scalaVersion.value)
+
+// allows build.sbt to reference Dependencies
+unmanagedSourceDirectories in Compile += (baseDirectory in Compile).value / "project"
 ```
 ```scala
 // build.sbt
