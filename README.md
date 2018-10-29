@@ -40,6 +40,35 @@ Add the following to your `project/plugins.sbt`:
 addSbtPlugin("com.github.daniel-shuy" % "sbt-liquibase-slick-codegen" % "0.1.1")
 ```
 
+Override the `slick-codegen` dependency version with the version of Slick you are using in your project.
+The dependency version can be extracted out into a Scala `object` in the `project` folder to allow it to be referenced in both `project/plugins.sbt` and `build.sbt` (there are many ways to do this), eg.
+```scala
+// project/project/Dependencies.scala
+import sbt._
+
+object Dependencies {
+  def slickVersion(scalaVersion: String): String =
+    CrossVersion.partialVersion(scalaVersion) match {
+      case Some((2, 10)) => "3.1.1"
+      case Some((2, 11)) | Some((2, 12)) => "3.2.3"
+      case _ =>
+        throw new IllegalArgumentException(s"Unsupported Scala version $scalaVersion")
+    }
+}
+```
+```scala
+// project/plugins.sbt
+addSbtPlugin("com.github.daniel-shuy" % "sbt-liquibase-slick-codegen" % "0.1.1")
+libraryDependencies += "com.typesafe.slick" %% "slick-codegen" % Dependencies.slickVersion(scalaVersion.value)
+```
+```scala
+// build.sbt
+libraryDependencies ++= Seq(
+  "com.typesafe.slick" %% "slick" % Dependencies.slickVersion(scalaVersion.value),
+  // ...
+)
+```
+
 ### Step 2: Enable the plugin for your project
 
 Add the following to your `build.sbt`:
