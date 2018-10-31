@@ -1,5 +1,6 @@
 import ch.qos.logback.classic.{Level, Logger}
 import com.github.daniel.shuy.sbt.scripted.scalatest.ScriptedScalaTestSuiteMixin
+import org.scalatest.Assertions._
 import org.scalatest.WordSpec
 import org.slf4j.LoggerFactory
 
