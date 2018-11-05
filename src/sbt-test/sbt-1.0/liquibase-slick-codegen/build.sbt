@@ -10,7 +10,7 @@ import scala.util.Random
 // scala identifiers must begin with an alphabet
 def randomIdentifierName = Random.alphanumeric.dropWhile(_.isDigit).take(Random.nextInt(10) + 1).mkString
 
-lazy val testBasicLiquibaseSlickCodegen = project
+lazy val testLiquibaseSlickCodegen = project
   .in(file("."))
   .settings(
     name := "test/sbt-1.0/liquibase-slick-codegen",
