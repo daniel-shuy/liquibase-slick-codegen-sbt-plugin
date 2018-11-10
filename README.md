@@ -4,18 +4,18 @@
 [![Build Status](https://travis-ci.org/daniel-shuy/liquibase-slick-codegen-sbt-plugin.svg?branch=master)](https://travis-ci.org/daniel-shuy/liquibase-slick-codegen-sbt-plugin)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/840edcbf1cd3464ea1d4597362ad7588)](https://www.codacy.com/app/daniel-shuy/liquibase-slick-codegen-sbt-plugin?utm_source=github.com&utm_medium=referral&utm_content=daniel-shuy/liquibase-slick-codegen-sbt-plugin&utm_campaign=badger)
 
-| Plugin Version | SBT Version | Slick Version |
-| -------------- | ----------- | ------------- |
-| 0.1.x          | 0.13.x      | 3.x.x         |
+| Plugin Version | SBT Version   | Slick Version | sbt-liquibase Version |
+| -------------- | ------------- | ------------- | --------------------- |
+| 1.x.x          | 0.13.x, 1.x.x | 3.x.x         | 1.1.0                 |
 
-A SBT plugin that uses [sbt-liquibase](https://github.com/sbtliquibase/sbt-liquibase-plugin) and [Slick Codegen](http://slick.lightbend.com/doc/3.1.1/code-generation.html) to generate Slick database schema code from a Liquibase changelog file.
+A SBT plugin that uses [sbt-liquibase](https://github.com/permutive/sbt-liquibase-plugin) and [Slick Codegen](http://slick.lightbend.com/doc/3.0.0/code-generation.html) to generate Slick database schema code from a Liquibase changelog file.
 
 The database schema code is generated in the Source folder (because the generated Slick database schema code should be under version control), in the configured package, with the configured class name.
 
 The plugin attaches itself to the `compile` phase, and will run before the compilation takes place (the generated Slick database schema code will be compiled as well).
 It is skipped on subsequent runs if the Liquibase changelog file hasn't been modified, and the Slick database schema code file hasn't been deleted.
 
-__Warning:__ This plugin currently depends on an experimental feature in Slick Codegen. This plugin uses the [H2 Database](http://www.h2database.com/html/main.html) to generate the Slick database schema code. Currently, using a different database profile from the one used to generate the database schema code is considered experimental and is not officially supported by Slick (see http://slick.lightbend.com/doc/3.1.1/code-generation.html#generated-code for more information).
+__Warning:__ This plugin currently depends on an experimental feature in Slick Codegen. This plugin uses the [H2 Database](http://www.h2database.com/html/main.html) to generate the Slick database schema code. Currently, using a different database profile from the one used to generate the database schema code is considered experimental and is not officially supported by Slick (see http://slick.lightbend.com/doc/3.0.0/code-generation.html#generated-code for more information).
 
 ## Limitations
 Because the plugin uses the Liquibase changelog file to create tables in a temporary H2 database, there are some limitations when configuring the Liquibase changelog file. If possible, avoid using them. If not, refer below for the workarounds. Make sure to test the generated Slick database schema code thoroughly.
@@ -37,7 +37,7 @@ If database-specific SQL is used with [\<sql>](http://www.liquibase.org/document
 
 Add the following to your `project/plugins.sbt`:
 ```scala
-addSbtPlugin("com.github.daniel-shuy" % "sbt-liquibase-slick-codegen" % "0.1.1")
+addSbtPlugin("com.github.daniel-shuy" % "sbt-liquibase-slick-codegen" % "1.0.0")
 ```
 
 Override the `slick-codegen` dependency version with the version of Slick you are using in your project.
@@ -58,7 +58,7 @@ object Dependencies {
 ```
 ```scala
 // project/plugins.sbt
-addSbtPlugin("com.github.daniel-shuy" % "sbt-liquibase-slick-codegen" % "0.1.1")
+addSbtPlugin("com.github.daniel-shuy" % "sbt-liquibase-slick-codegen" % "1.0.0")
 libraryDependencies += "com.typesafe.slick" %% "slick-codegen" % Dependencies.slickVersion(scalaVersion.value)
 
 // allows build.sbt to reference Dependencies
@@ -125,6 +125,8 @@ The `sbt-liquibase` plugin can still be used as normal alongside `sbt-liquibase-
 
 Note that the `liquibaseChangelog` setting is shared among both plugins.
 
+This plugin used to depend on [sbtliquibase/sbt-liquibase-plugin](https://github.com/sbtliquibase/sbt-liquibase-plugin), but has been changed to depend on [permutive/sbt-liquibase](https://github.com/permutive/sbt-liquibase-plugin) (a fork of [sbtliquibase/sbt-liquibase-plugin](https://github.com/sbtliquibase/sbt-liquibase-plugin)) since version 1.0.0, in order to support SBT 1.0.
+
 
 ### Play Framework
 When using this plugin with [Play Framework](https://www.playframework.com/), remember to configure `liquibaseChangelog` to point to the correct path, eg.
@@ -140,7 +142,7 @@ You can have multiple Liquibase changelog files, then [include](http://www.liqui
 
 
 ### Slick Codegen customization
-You can still perform [Slick Codegen customizations](http://slick.lightbend.com/doc/3.1.1/code-generation.html#customization) with this plugin.
+You can still perform [Slick Codegen customizations](http://slick.lightbend.com/doc/3.0.0/code-generation.html#customization) with this plugin.
 
 Create a class in `project` that extends `com.github.daniel.shuy.liquibase.slick.codegen.SourceCodeGenerator`, then override methods to customize Slick Codegen's behavior, eg.
 
@@ -158,14 +160,10 @@ then in `build.sbt`, assign the constructor as the `liquibaseSlickCodegenSourceC
 liquibaseSlickCodegenSourceCodeGeneratorFactory := (model => new CustomSourceCodeGenerator(model))
 ```
 
-### SBT 1.x
-This project depends on [sbt-liquibase](https://github.com/sbtliquibase/sbt-liquibase-plugin), which doesn't support SBT 1.x as of yet.
-
-If you would like this project to support SBT 1.x, please help to upvote this Issue (https://github.com/sbtliquibase/sbt-liquibase-plugin/issues/17), or better yet, help open a Pull Request to update it to support SBT 1.x.
 
 ## Licence
 
-Copyright 2017 Daniel Shuy
+Copyright 2017, 2018 Daniel Shuy
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
 
