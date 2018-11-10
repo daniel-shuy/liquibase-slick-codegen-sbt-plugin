@@ -125,7 +125,7 @@ The `sbt-liquibase` plugin can still be used as normal alongside `sbt-liquibase-
 
 Note that the `liquibaseChangelog` setting is shared among both plugins.
 
-This plugin used to depend on [sbtliquibase/sbt-liquibase-plugin](https://github.com/sbtliquibase/sbt-liquibase-plugin), but has been changed to depend on [permutive/sbt-liquibase](https://github.com/permutive/sbt-liquibase-plugin) (a fork of sbtliquibase/sbt-liquibase-plugin) since version 1.0.0, in order to support SBT 1.0.
+This plugin used to depend on [sbtliquibase/sbt-liquibase-plugin](https://github.com/sbtliquibase/sbt-liquibase-plugin), but has been changed to depend on [permutive/sbt-liquibase](https://github.com/permutive/sbt-liquibase-plugin) (a fork of [sbtliquibase/sbt-liquibase-plugin](https://github.com/sbtliquibase/sbt-liquibase-plugin)) since version 1.0.0, in order to support SBT 1.0.
 
 
 ### Play Framework
