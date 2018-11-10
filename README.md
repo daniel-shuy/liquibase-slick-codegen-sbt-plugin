@@ -1,8 +1,12 @@
 # liquibase-slick-codegen-sbt-plugin
 
+[ ![Download](https://api.bintray.com/packages/daniel-shuy/sbt-plugins/sbt-liquibase-slick-codegen/images/download.svg) ](https://bintray.com/daniel-shuy/sbt-plugins/sbt-liquibase-slick-codegen/_latestVersion)
 [![Build Status](https://travis-ci.org/daniel-shuy/liquibase-slick-codegen-sbt-plugin.svg?branch=master)](https://travis-ci.org/daniel-shuy/liquibase-slick-codegen-sbt-plugin)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/840edcbf1cd3464ea1d4597362ad7588)](https://www.codacy.com/app/daniel-shuy/liquibase-slick-codegen-sbt-plugin?utm_source=github.com&utm_medium=referral&utm_content=daniel-shuy/liquibase-slick-codegen-sbt-plugin&utm_campaign=badger)
 
+| Plugin Version | SBT Version | Slick Version |
+| -------------- | ----------- | ------------- |
+| 0.1.x          | 0.13.x      | 3.x.x         |
 
 A SBT plugin that uses [sbt-liquibase](https://github.com/sbtliquibase/sbt-liquibase-plugin) and [Slick Codegen](http://slick.lightbend.com/doc/3.1.1/code-generation.html) to generate Slick database schema code from a Liquibase changelog file.
 
@@ -36,6 +40,38 @@ Add the following to your `project/plugins.sbt`:
 addSbtPlugin("com.github.daniel-shuy" % "sbt-liquibase-slick-codegen" % "0.1.1")
 ```
 
+Override the `slick-codegen` dependency version with the version of Slick you are using in your project.
+The dependency version can be extracted out into a Scala `object` in the `project` folder to allow it to be referenced in both `project/plugins.sbt` and `build.sbt` (there are many ways to do this), eg.
+```scala
+// project/project/Dependencies.scala
+import sbt._
+
+object Dependencies {
+  def slickVersion(scalaVersion: String): String =
+    CrossVersion.partialVersion(scalaVersion) match {
+      case Some((2, 10)) => "3.1.1"
+      case Some((2, 11)) | Some((2, 12)) => "3.2.3"
+      case _ =>
+        throw new IllegalArgumentException(s"Unsupported Scala version $scalaVersion")
+    }
+}
+```
+```scala
+// project/plugins.sbt
+addSbtPlugin("com.github.daniel-shuy" % "sbt-liquibase-slick-codegen" % "0.1.1")
+libraryDependencies += "com.typesafe.slick" %% "slick-codegen" % Dependencies.slickVersion(scalaVersion.value)
+
+// allows build.sbt to reference Dependencies
+unmanagedSourceDirectories in Compile += (baseDirectory in Compile).value / "project"
+```
+```scala
+// build.sbt
+libraryDependencies ++= Seq(
+  "com.typesafe.slick" %% "slick" % Dependencies.slickVersion(scalaVersion.value),
+  // ...
+)
+```
+
 ### Step 2: Enable the plugin for your project
 
 Add the following to your `build.sbt`:
@@ -62,7 +98,7 @@ This will create the Slick database schema code as `com.foo.bar.Tables.scala`
 
 ### Step 5: Execute the plugin
 
-Run `sbt compile` or `sbt liquibase-slick-codegen` to generate the Slick database schema code.
+Run `sbt compile` or `sbt liquibaseSlickCodegen` to generate the Slick database schema code.
 
 ## Settings
 
@@ -76,9 +112,9 @@ Run `sbt compile` or `sbt liquibase-slick-codegen` to generate the Slick databas
 
 ## Tasks
 
-| Task                    | Description                                                                                                                                    |
-| ----------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
-| liquibase-slick-codegen | Forces the plugin to run, regardless of whether the Liquibase changelog file has been modified, or the Slick database schema code file exists. |
+| Task                  | Description                                                                                                                                    |
+| --------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| liquibaseSlickCodegen | Forces the plugin to run, regardless of whether the Liquibase changelog file has been modified, or the Slick database schema code file exists. |
 
 ## Notes
 
