@@ -18,8 +18,6 @@ import scala.concurrent.duration.Duration
 import scala.util.{Failure, Random, Success}
 
 object SbtLiquibaseSlickCodegen extends AutoPlugin {
-  import autoImport._
-
   private[this] val random = new Random(new SecureRandom())
 
   val SlickDriver = H2Driver
@@ -43,6 +41,7 @@ object SbtLiquibaseSlickCodegen extends AutoPlugin {
 
     lazy val liquibaseSlickCodegenSourceCodeGeneratorFactory: SettingKey[Model => SourceCodeGenerator] = SettingKey("liquibase-slick-codegen-source-code-generator-factory", "The factory for the SourceCodeGenerator to use to generate Slick database schema code")
   }
+  import autoImport._
 
   private[this] lazy val logger = Def.task[Logger] {
     streams.value.log
