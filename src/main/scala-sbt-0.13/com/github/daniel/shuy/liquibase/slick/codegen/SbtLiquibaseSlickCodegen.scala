@@ -167,10 +167,14 @@ object SbtLiquibaseSlickCodegen extends AutoPlugin {
   }
 
   private[this] implicit class ClassUtils(clazz: Class[_]) {
-    private val TrailingDollar = "\\$$".r.pattern
+    import ClassUtils._
 
     // removes the trailing dollar sign from a Singleton Object's class name to obtain the actual underlying Class name
     def singletonUnderlyingClassName: String = TrailingDollar.matcher(clazz.getName).replaceFirst("")
+  }
+
+  object ClassUtils {
+    private val TrailingDollar = "\\$$".r.pattern
   }
 
   override lazy val projectSettings: Seq[Setting[_]] =
