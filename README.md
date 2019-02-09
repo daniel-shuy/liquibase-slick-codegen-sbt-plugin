@@ -1,8 +1,11 @@
 # liquibase-slick-codegen-sbt-plugin
 
 [ ![Download](https://api.bintray.com/packages/daniel-shuy/sbt-plugins/sbt-liquibase-slick-codegen/images/download.svg) ](https://bintray.com/daniel-shuy/sbt-plugins/sbt-liquibase-slick-codegen/_latestVersion)
-[![Build Status](https://travis-ci.org/daniel-shuy/liquibase-slick-codegen-sbt-plugin.svg?branch=master)](https://travis-ci.org/daniel-shuy/liquibase-slick-codegen-sbt-plugin)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/840edcbf1cd3464ea1d4597362ad7588)](https://www.codacy.com/app/daniel-shuy/liquibase-slick-codegen-sbt-plugin?utm_source=github.com&utm_medium=referral&utm_content=daniel-shuy/liquibase-slick-codegen-sbt-plugin&utm_campaign=badger)
+
+| Branch | Travis CI | Codacy |
+| ------ | --------- | ------ |
+| Master | [![Build Status](https://travis-ci.org/daniel-shuy/liquibase-slick-codegen-sbt-plugin.svg?branch=master)](https://travis-ci.org/daniel-shuy/liquibase-slick-codegen-sbt-plugin) | [![Codacy Badge](https://api.codacy.com/project/badge/Grade/840edcbf1cd3464ea1d4597362ad7588)](https://www.codacy.com/app/daniel-shuy/liquibase-slick-codegen-sbt-plugin?branch=master&utm_source=github.com&amp;utm_medium=referral&amp;utm_content=daniel-shuy/liquibase-slick-codegen-sbt-plugin&amp;utm_campaign=Badge_Grade) |
+| Develop | [![Build Status](https://travis-ci.org/daniel-shuy/liquibase-slick-codegen-sbt-plugin.svg?branch=develop)](https://travis-ci.org/daniel-shuy/liquibase-slick-codegen-sbt-plugin) | [![Codacy Badge](https://api.codacy.com/project/badge/Grade/840edcbf1cd3464ea1d4597362ad7588)](https://www.codacy.com/app/daniel-shuy/liquibase-slick-codegen-sbt-plugin?branch=develop&utm_source=github.com&amp;utm_medium=referral&amp;utm_content=daniel-shuy/liquibase-slick-codegen-sbt-plugin&amp;utm_campaign=Badge_Grade) |
 
 | Plugin Version | SBT Version   | Slick Version | sbt-liquibase Version |
 | -------------- | ------------- | ------------- | --------------------- |
