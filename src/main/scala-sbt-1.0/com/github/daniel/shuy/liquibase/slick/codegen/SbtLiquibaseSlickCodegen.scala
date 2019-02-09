@@ -67,8 +67,8 @@ object SbtLiquibaseSlickCodegen extends AutoPlugin {
 
   /**
     * Compares the specified cache with the specified input file and output file.
-    * If the specified cache doesn't exist, the input file is modified, or the output file doesn't exist,
-    * updates the cache.
+    * Updates the cache if the specified cache doesn't exist, the input file is modified,
+    * or the output file doesn't exist.
     *
     * @param cacheFile
     *                  The cache file to check.
@@ -77,24 +77,22 @@ object SbtLiquibaseSlickCodegen extends AutoPlugin {
     * @param outputFile
     *                   The output file to compare against.
     *
-    * @return `true` if the specified cache doesn't exist, the input file is modified, or the output file doesn't exist,
+    * @return `true` if the specified cache exists, the input file is unmodified, and the output file exists,
     *         `false` otherwise.
     */
   private[this] def checkAndUpdateCache(cacheFile: File, inputFile: File, outputFile: File): Boolean = {
-    // use Promise to return a value from a synchronous callback method without using a mutable variable
-    val promise = Promise[Boolean]
+    var success = true
 
     FileFunction.cached(cacheFile, FilesInfo.lastModified, FilesInfo.exists)(_ => {
-      promise.success(true)
+      success = false
       Set(outputFile)
     })(Set(inputFile))
 
-    promise.trySuccess(false)
-    Await.result(promise.future, Duration.Inf)
+    success
   }
 
   private[this] lazy val requireLiquibaseSlickCodegen = Def.taskDyn[Boolean] {
-    val required = checkAndUpdateCache(cacheDir.value, liquibaseChangelog.value, slickCodegenFile.value)
+    val required = !checkAndUpdateCache(cacheDir.value, liquibaseChangelog.value, slickCodegenFile.value)
 
     if (required) {
       // because it is impossible to check the cache without updating it, the cache may end up in a corrupted state if
