@@ -13,8 +13,8 @@ import sbt._
 import slick.jdbc.{H2Profile, JdbcProfile}
 import slick.model.Model
 
+import scala.concurrent._
 import scala.concurrent.duration.Duration
-import scala.concurrent.{Await, ExecutionContext, ExecutionContextExecutor, Future}
 import scala.util.{Failure, Random, Success}
 
 object SbtLiquibaseSlickCodegen extends AutoPlugin {
@@ -66,8 +66,8 @@ object SbtLiquibaseSlickCodegen extends AutoPlugin {
 
   /**
     * Compares the specified cache with the specified input file and output file.
-    * If cache doesn't exist, the input file is modified, or the output file doesn't exist,
-    * performs the specified action and updates the cache.
+    * If the specified cache doesn't exist, the input file is modified, or the output file doesn't exist,
+    * updates the cache.
     *
     * @param cacheFile
     *                  The cache file to check.
@@ -75,16 +75,25 @@ object SbtLiquibaseSlickCodegen extends AutoPlugin {
     *                  The input file to compare against.
     * @param outputFile
     *                   The output file to compare against.
-    * @param action
-    *               The action to perform if cache doesn't exist, the input file is modified, or the output file doesn't exist
+    *
+    * @return `true` if the specified cache doesn't exist, the input file is modified, or the output file doesn't exist,
+    *         `false` otherwise.
     */
-  private[this] def checkAndUpdateCache(cacheFile: File, inputFile: File, outputFile: File)(action: Set[File] => Unit): Unit =
-    FileFunction.cached(cacheFile, FilesInfo.lastModified, FilesInfo.exists)(action.andThen(_ => Set(outputFile)))(Set(inputFile))
+  private[this] def checkAndUpdateCache(cacheFile: File, inputFile: File, outputFile: File): Boolean = {
+    // use Promise to return a value from a synchronous callback method without using a mutable variable
+    val promise = Promise[Boolean]
+
+    FileFunction.cached(cacheFile, FilesInfo.lastModified, FilesInfo.exists)(_ => {
+      promise.success(true)
+      Set(outputFile)
+    })(Set(inputFile))
+
+    promise.trySuccess(false)
+    Await.result(promise.future, Duration.Inf)
+  }
 
   private[this] lazy val requireLiquibaseSlickCodegen = Def.taskDyn[Boolean] {
-    var required = false
-
-    checkAndUpdateCache(cacheDir.value, liquibaseChangelog.value, slickCodegenFile.value)(_ => required = true)
+    val required = checkAndUpdateCache(cacheDir.value, liquibaseChangelog.value, slickCodegenFile.value)
 
     if (required) {
       // because it is impossible to check the cache without updating it, the cache may end up in a corrupted state if
@@ -94,8 +103,7 @@ object SbtLiquibaseSlickCodegen extends AutoPlugin {
         deleteCache.value
         required
       }
-    }
-    else {
+    } else {
       Def.task {
         required
       }
@@ -106,7 +114,7 @@ object SbtLiquibaseSlickCodegen extends AutoPlugin {
     // delete the cache to force an update every time
     deleteCache.value
 
-    checkAndUpdateCache(cacheDir.value, liquibaseChangelog.value, slickCodegenFile.value)(_ => ())
+    checkAndUpdateCache(cacheDir.value, liquibaseChangelog.value, slickCodegenFile.value)
   }
 
   private[this] lazy val deleteCache = Def.task[Unit] {
