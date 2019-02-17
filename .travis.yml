@@ -11,17 +11,14 @@ dist: trusty
 install:
   - git checkout -qf $TRAVIS_BRANCH
 
-stages:
-  - name: test
-  - name: release
-    if: (branch =~ /^release\/.*$/)
-
 jobs:
   include:
-    - stage: test
+    - name: test
+      if: (NOT branch =~ /^release\/.*$/)
       # When running scripted tests targeting multiple SBT versions, we must first publish locally for all SBT versions
       script: sbt "^ publishLocal" "^ scripted"
-    - stage: release
+    - name: release
+      if: (branch =~ /^release\/.*$/)
       # Extract release version from branch name
       env: export RELEASE_VERSION=`echo $TRAVIS_BRANCH | sed -r 's/^release\/(.*)$/\1/'`
       script: sbt "^ release release-version $RELEASE_VERSION with-defaults"
