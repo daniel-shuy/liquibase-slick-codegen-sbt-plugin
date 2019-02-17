@@ -8,6 +8,9 @@ language: scala
 # Ubuntu Trusty (https://docs.travis-ci.com/user/reference/trusty/)
 dist: trusty
 
+install:
+  - git checkout -qf $TRAVIS_BRANCH
+
 stages:
   - name: test
   - name: release
