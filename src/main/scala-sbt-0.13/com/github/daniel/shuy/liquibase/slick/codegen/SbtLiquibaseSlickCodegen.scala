@@ -13,8 +13,8 @@ import sbt._
 import slick.driver.{H2Driver, JdbcProfile}
 import slick.model.Model
 
+import scala.concurrent._
 import scala.concurrent.duration.Duration
-import scala.concurrent.{Await, ExecutionContext, ExecutionContextExecutor, Future}
 import scala.util.{Failure, Random, Success}
 
 object SbtLiquibaseSlickCodegen extends AutoPlugin {
@@ -66,8 +66,8 @@ object SbtLiquibaseSlickCodegen extends AutoPlugin {
 
   /**
     * Compares the specified cache with the specified input file and output file.
-    * If cache doesn't exist, the input file is modified, or the output file doesn't exist,
-    * performs the specified action and updates the cache.
+    * Updates the cache if the specified cache doesn't exist, the input file is modified,
+    * or the output file doesn't exist.
     *
     * @param cacheFile
     *                  The cache file to check.
@@ -75,16 +75,23 @@ object SbtLiquibaseSlickCodegen extends AutoPlugin {
     *                  The input file to compare against.
     * @param outputFile
     *                   The output file to compare against.
-    * @param action
-    *               The action to perform if cache doesn't exist, the input file is modified, or the output file doesn't exist
+    *
+    * @return `true` if the specified cache exists, the input file is unmodified, and the output file exists,
+    *         `false` otherwise.
     */
-  private[this] def checkAndUpdateCache(cacheFile: File, inputFile: File, outputFile: File)(action: Set[File] => Unit): Unit =
-    FileFunction.cached(cacheFile, FilesInfo.lastModified, FilesInfo.exists)(action.andThen(_ => Set(outputFile)))(Set(inputFile))
+  private[this] def checkAndUpdateCache(cacheFile: File, inputFile: File, outputFile: File): Boolean = {
+    var success = true
+
+    FileFunction.cached(cacheFile, FilesInfo.lastModified, FilesInfo.exists)(_ => {
+      success = false
+      Set(outputFile)
+    })(Set(inputFile))
+
+    success
+  }
 
   private[this] lazy val requireLiquibaseSlickCodegen = Def.taskDyn[Boolean] {
-    var required = false
-
-    checkAndUpdateCache(cacheDir.value, liquibaseChangelog.value, slickCodegenFile.value)(_ => required = true)
+    val required = !checkAndUpdateCache(cacheDir.value, liquibaseChangelog.value, slickCodegenFile.value)
 
     if (required) {
       // because it is impossible to check the cache without updating it, the cache may end up in a corrupted state if
@@ -94,8 +101,7 @@ object SbtLiquibaseSlickCodegen extends AutoPlugin {
         deleteCache.value
         required
       }
-    }
-    else {
+    } else {
       Def.task {
         required
       }
@@ -106,7 +112,7 @@ object SbtLiquibaseSlickCodegen extends AutoPlugin {
     // delete the cache to force an update every time
     deleteCache.value
 
-    checkAndUpdateCache(cacheDir.value, liquibaseChangelog.value, slickCodegenFile.value)(_ => ())
+    checkAndUpdateCache(cacheDir.value, liquibaseChangelog.value, slickCodegenFile.value)
   }
 
   private[this] lazy val deleteCache = Def.task[Unit] {
@@ -159,10 +165,14 @@ object SbtLiquibaseSlickCodegen extends AutoPlugin {
   }
 
   private[this] implicit class ClassUtils(clazz: Class[_]) {
-    private val TrailingDollar = "\\$$".r.pattern
+    import ClassUtils._
 
     // removes the trailing dollar sign from a Singleton Object's class name to obtain the actual underlying Class name
     def singletonUnderlyingClassName: String = TrailingDollar.matcher(clazz.getName).replaceFirst("")
+  }
+
+  object ClassUtils {
+    private val TrailingDollar = "\\$$".r.pattern
   }
 
   override lazy val projectSettings: Seq[Setting[_]] =

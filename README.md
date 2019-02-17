@@ -1,8 +1,11 @@
 # liquibase-slick-codegen-sbt-plugin
 
 [ ![Download](https://api.bintray.com/packages/daniel-shuy/sbt-plugins/sbt-liquibase-slick-codegen/images/download.svg) ](https://bintray.com/daniel-shuy/sbt-plugins/sbt-liquibase-slick-codegen/_latestVersion)
-[![Build Status](https://travis-ci.org/daniel-shuy/liquibase-slick-codegen-sbt-plugin.svg?branch=master)](https://travis-ci.org/daniel-shuy/liquibase-slick-codegen-sbt-plugin)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/840edcbf1cd3464ea1d4597362ad7588)](https://www.codacy.com/app/daniel-shuy/liquibase-slick-codegen-sbt-plugin?utm_source=github.com&utm_medium=referral&utm_content=daniel-shuy/liquibase-slick-codegen-sbt-plugin&utm_campaign=badger)
+
+| Branch | Travis CI | Codacy |
+| ------ | --------- | ------ |
+| Master | [![Build Status](https://travis-ci.org/daniel-shuy/liquibase-slick-codegen-sbt-plugin.svg?branch=master)](https://travis-ci.org/daniel-shuy/liquibase-slick-codegen-sbt-plugin) | [![Codacy Badge](https://api.codacy.com/project/badge/Grade/840edcbf1cd3464ea1d4597362ad7588?branch=master)](https://www.codacy.com/app/daniel-shuy/liquibase-slick-codegen-sbt-plugin?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=daniel-shuy/liquibase-slick-codegen-sbt-plugin&amp;utm_campaign=Badge_Grade) |
+| Develop | [![Build Status](https://travis-ci.org/daniel-shuy/liquibase-slick-codegen-sbt-plugin.svg?branch=develop)](https://travis-ci.org/daniel-shuy/liquibase-slick-codegen-sbt-plugin) | [![Codacy Badge](https://api.codacy.com/project/badge/Grade/840edcbf1cd3464ea1d4597362ad7588?branch=develop)](https://www.codacy.com/app/daniel-shuy/liquibase-slick-codegen-sbt-plugin?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=daniel-shuy/liquibase-slick-codegen-sbt-plugin&amp;utm_campaign=Badge_Grade) |
 
 | Plugin Version | SBT Version   | Slick Version | sbt-liquibase Version |
 | -------------- | ------------- | ------------- | --------------------- |
@@ -163,7 +166,7 @@ liquibaseSlickCodegenSourceCodeGeneratorFactory := (model => new CustomSourceCod
 
 ## Licence
 
-Copyright 2017, 2018 Daniel Shuy
+Copyright 2017, 2018, 2019 Daniel Shuy
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
 
