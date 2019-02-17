@@ -19,8 +19,12 @@ jobs:
       script: sbt "^ publishLocal" "^ scripted"
     - name: release
       if: (branch =~ /^release\/.*$/)
-      # Extract release version from branch name
-      env: export RELEASE_VERSION=`echo $TRAVIS_BRANCH | sed -r 's/^release\/(.*)$/\1/'`
+      env:
+        - BINTRAY_USER=daniel-shuy
+        # BINTRAY_PASS
+        - secure: loPa3bG2SegT/rePSaIAH9nm282w26YaRHQxkJG0xTocfFjgFQ61Lz2hwbZcJIymkv6xj0o0+r3IDJVrKdYMvy+hEon/CdpoEpbEGbyu3WD3jk9dBZ4OREU6Xu2/+1+qpoFKz5xLuLaev8LD/7cIKbXjpOkmvinp1UCtIc6zjeLFzJoNcG+8QX2D56xt7BFKJIPam9D+qHK7KqVa4hVTiXbjYtBeitYb1mQfwceWxnyJVz9QoHSqMbp8MxKu+PJ0YBUy96oat7FyfoBFM4Bd6chHJjcN9oeC2iWnr5CCLRnSkd7cE5/vm6o2uZBDc/XK62JuD1yboF0pkONJRXTCi6QKYmItB2ix+Pdc1gY86dds7uC4i8eHTT75NGjcq9HbFx/3BvTC/5hX6MAmpOqNd2U6ExVqMyZIirKlVo3l35qho+fC+L8SgSGsa6z+CW1vXVp928CjNDOVGKED+Cf/uCrXF5VmB7cxGZrixqYKCabYj/MiUq+wcZO4oChUUbCKOS49YzDJ29q701iPR/SN5155l5zNiZ9br85xqThWImU7wdrUk52PIw6zR5UTxjPgmfAFzbtSNQil1Eh6Dw6XWghsZdV7/62mvcW983aJtjJixDMsCZJaq+oYKfOsVFLLO0mwasZEUFhSS1HG+m9TvzANFiDEQDmAa/b2H/J65HU=
+        # Extract release version from branch name
+        - RELEASE_VERSION=`echo $TRAVIS_BRANCH | sed -r 's/^release\/(.*)$/\1/'`
       script: sbt "^ release release-version $RELEASE_VERSION with-defaults"
 
 # These directories are cached to S3 at the end of the build
