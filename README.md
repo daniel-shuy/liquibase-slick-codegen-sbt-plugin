@@ -40,7 +40,7 @@ If database-specific SQL is used with [\<sql>](http://www.liquibase.org/document
 
 Add the following to your `project/plugins.sbt`:
 ```scala
-addSbtPlugin("com.github.daniel-shuy" % "sbt-liquibase-slick-codegen" % "1.0.0")
+addSbtPlugin("com.github.daniel-shuy" % "sbt-liquibase-slick-codegen" % "1.0.1")
 ```
 
 Override the `slick-codegen` dependency version with the version of Slick you are using in your project.
@@ -61,7 +61,7 @@ object Dependencies {
 ```
 ```scala
 // project/plugins.sbt
-addSbtPlugin("com.github.daniel-shuy" % "sbt-liquibase-slick-codegen" % "1.0.0")
+addSbtPlugin("com.github.daniel-shuy" % "sbt-liquibase-slick-codegen" % "1.0.1")
 libraryDependencies += "com.typesafe.slick" %% "slick-codegen" % Dependencies.slickVersion(scalaVersion.value)
 
 // allows build.sbt to reference Dependencies
