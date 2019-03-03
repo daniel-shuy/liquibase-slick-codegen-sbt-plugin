@@ -7,9 +7,9 @@
 | Master | [![Build Status](https://travis-ci.org/daniel-shuy/liquibase-slick-codegen-sbt-plugin.svg?branch=master)](https://travis-ci.org/daniel-shuy/liquibase-slick-codegen-sbt-plugin) | [![Codacy Badge](https://api.codacy.com/project/badge/Grade/840edcbf1cd3464ea1d4597362ad7588?branch=master)](https://www.codacy.com/app/daniel-shuy/liquibase-slick-codegen-sbt-plugin?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=daniel-shuy/liquibase-slick-codegen-sbt-plugin&amp;utm_campaign=Badge_Grade) |
 | Develop | [![Build Status](https://travis-ci.org/daniel-shuy/liquibase-slick-codegen-sbt-plugin.svg?branch=develop)](https://travis-ci.org/daniel-shuy/liquibase-slick-codegen-sbt-plugin) | [![Codacy Badge](https://api.codacy.com/project/badge/Grade/840edcbf1cd3464ea1d4597362ad7588?branch=develop)](https://www.codacy.com/app/daniel-shuy/liquibase-slick-codegen-sbt-plugin?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=daniel-shuy/liquibase-slick-codegen-sbt-plugin&amp;utm_campaign=Badge_Grade) |
 
-| Plugin Version | SBT Version   | Slick Version | sbt-liquibase Version |
-| -------------- | ------------- | ------------- | --------------------- |
-| 1.x.x          | 0.13.x, 1.x.x | 3.x.x         | 1.1.0                 |
+| Plugin Version | SBT Version   | Slick Version | sbt-liquibase Version | Liquibase Version |
+| -------------- | ------------- | ------------- | --------------------- | ----------------- |
+| 1.x.x          | 0.13.x, 1.x.x | 3.x.x         | 1.1.0                 | 3.6.1+            |
 
 A SBT plugin that uses [sbt-liquibase](https://github.com/permutive/sbt-liquibase-plugin) and [Slick Codegen](http://slick.lightbend.com/doc/3.0.0/code-generation.html) to generate Slick database schema code from a Liquibase changelog file.
 
@@ -22,6 +22,8 @@ __Warning:__ This plugin currently depends on an experimental feature in Slick C
 
 ## Limitations
 Because the plugin uses the Liquibase changelog file to create tables in a temporary H2 database, there are some limitations when configuring the Liquibase changelog file. If possible, avoid using them. If not, refer below for the workarounds. Make sure to test the generated Slick database schema code thoroughly.
+
+The Liquibase version must be 3.6.1 or above, due to [sbt-liquibase](https://github.com/permutive/sbt-liquibase-plugin).
 
 ### Database-specific Preconditions
 If a [\<dbms> precondition](http://www.liquibase.org/documentation/preconditions.html#ltdbmsgt) with a database other than H2 is used, add `<dbms type="h2" />` as well.
@@ -73,6 +75,12 @@ libraryDependencies ++= Seq(
   "com.typesafe.slick" %% "slick" % Dependencies.slickVersion(scalaVersion.value),
   // ...
 )
+```
+
+Override the `liquibase-core` dependency version with the version of Liquibase you wise to use:
+```scala
+addSbtPlugin("com.github.daniel-shuy" % "sbt-liquibase-slick-codegen" % "1.0.1")
+libraryDependencies += "org.liquibase" % "liquibase-core" % "3.6.3"
 ```
 
 ### Step 2: Enable the plugin for your project
