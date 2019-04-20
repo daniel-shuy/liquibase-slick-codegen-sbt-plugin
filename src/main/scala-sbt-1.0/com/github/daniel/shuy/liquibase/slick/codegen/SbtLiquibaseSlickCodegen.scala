@@ -282,7 +282,7 @@ object SbtLiquibaseSlickCodegen extends AutoPlugin {
           Def.task {
             Def.taskDyn {
               Await.result(
-                Await.ready(slickCodegen.value, Duration.Inf) map {
+                Await.ready(slickCodegen.value, Duration.Inf).map {
                   // update cache with newly generated database schema code file
                   _ =>
                     updateCache
