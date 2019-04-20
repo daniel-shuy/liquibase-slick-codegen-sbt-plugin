@@ -31,33 +31,33 @@ object SbtLiquibaseSlickCodegen extends AutoPlugin {
 
   object autoImport {
     lazy val LiquibaseSlickCodegen: Configuration = config(
-      "liquibase-slick-codegen",
+      "liquibase-slick-codegen"
     )
 
     lazy val liquibaseSlickCodegen: TaskKey[File] = TaskKey(
       "liquibase-slick-codegen",
-      "Generate Slick database schema code from Liquibase changelog file",
+      "Generate Slick database schema code from Liquibase changelog file"
     )
 
     lazy val liquibaseSlickCodegenOutputPackage: SettingKey[String] =
       SettingKey(
         "liquibase-slick-codegen-output-package",
-        "Package the generated Slick database schema code should be placed in",
+        "Package the generated Slick database schema code should be placed in"
       )
     lazy val liquibaseSlickCodegenOutputClass: SettingKey[String] = SettingKey(
       "liquibase-slick-codegen-output-class",
-      "The class name for the generated Slick database schema code",
+      "The class name for the generated Slick database schema code"
     )
 
     lazy val liquibaseSlickCodegenProfile: SettingKey[JdbcProfile] = SettingKey(
       "liquibase-slick-codegen-profile",
-      "The Slick database profile for the generated Slick database schema code",
+      "The Slick database profile for the generated Slick database schema code"
     )
 
     lazy val liquibaseSlickCodegenSourceCodeGeneratorFactory
         : SettingKey[Model => SourceCodeGenerator] = SettingKey(
       "liquibase-slick-codegen-source-code-generator-factory",
-      "The factory for the SourceCodeGenerator to use to generate Slick database schema code",
+      "The factory for the SourceCodeGenerator to use to generate Slick database schema code"
     )
   }
   import autoImport._
@@ -101,7 +101,7 @@ object SbtLiquibaseSlickCodegen extends AutoPlugin {
   private[this] def checkAndUpdateCache(
       cacheFile: File,
       inputFile: File,
-      outputFile: File,
+      outputFile: File
   ): Boolean = {
     var success = true
 
@@ -109,7 +109,7 @@ object SbtLiquibaseSlickCodegen extends AutoPlugin {
       _ => {
         success = false
         Set(outputFile)
-      },
+      }
     )(Set(inputFile))
 
     success
@@ -119,7 +119,7 @@ object SbtLiquibaseSlickCodegen extends AutoPlugin {
     val required = !checkAndUpdateCache(
       cacheDir.value,
       liquibaseChangelog.value,
-      slickCodegenFile.value,
+      slickCodegenFile.value
     )
 
     if (required) {
@@ -144,7 +144,7 @@ object SbtLiquibaseSlickCodegen extends AutoPlugin {
     checkAndUpdateCache(
       cacheDir.value,
       liquibaseChangelog.value,
-      slickCodegenFile.value,
+      slickCodegenFile.value
     )
   }
 
@@ -156,7 +156,7 @@ object SbtLiquibaseSlickCodegen extends AutoPlugin {
         new SimpleFileVisitor[Path] {
           override def visitFile(
               file: Path,
-              attrs: BasicFileAttributes,
+              attrs: BasicFileAttributes
           ): FileVisitResult = {
             val result = super.visitFile(file, attrs)
             Files.delete(file)
@@ -165,13 +165,13 @@ object SbtLiquibaseSlickCodegen extends AutoPlugin {
 
           override def postVisitDirectory(
               dir: Path,
-              exc: IOException,
+              exc: IOException
           ): FileVisitResult = {
             val result = super.postVisitDirectory(dir, exc)
             Files.delete(dir)
             result
           }
-        },
+        }
       )
     }
   }
@@ -189,7 +189,7 @@ object SbtLiquibaseSlickCodegen extends AutoPlugin {
       Username,
       Password,
       driver = JdbcDriver,
-      keepAliveConnection = true,
+      keepAliveConnection = true
     )
 
     val modelAction = SlickDriver.createModel().withPinnedSession
@@ -200,12 +200,12 @@ object SbtLiquibaseSlickCodegen extends AutoPlugin {
 
     val codegenFuture = modelFuture.map(
       model =>
-        liquibaseSlickCodegenSourceCodeGeneratorFactory.value.apply(model),
+        liquibaseSlickCodegenSourceCodeGeneratorFactory.value.apply(model)
     )
     codegenFuture.onComplete {
       case Success(_) =>
         logger.value.info(
-          s"Slick Codegen: Successfully generated database schema code at ${slickCodegenFile.value.getPath}",
+          s"Slick Codegen: Successfully generated database schema code at ${slickCodegenFile.value.getPath}"
         )
       case Failure(t) => logger.value.error(t.getStackTraceString)
     }
@@ -217,8 +217,8 @@ object SbtLiquibaseSlickCodegen extends AutoPlugin {
           slickCodegenDirValue.getPath,
           liquibaseSlickCodegenOutputPackage.value,
           liquibaseSlickCodegenOutputClass.value,
-          slickCodegenFileNameValue,
-        ),
+          slickCodegenFileNameValue
+        )
     )
   }
 
@@ -253,17 +253,17 @@ object SbtLiquibaseSlickCodegen extends AutoPlugin {
               logger.value.info("Performing cleanup:")
               DeleteDbFiles.execute(target.value.getPath, DbName, false)
             })
-            .value,
-        ),
+            .value
+        )
     ) ++
       Seq(
         libraryDependencies ++= Seq(
           // read version of Slick library from Slick Codegen's Manifest (Slick's Manifest does not have Implementation-Version)
           "com.typesafe.slick" %% "slick" % classOf[
-            slick.codegen.SourceCodeGenerator,
+            slick.codegen.SourceCodeGenerator
           ].getPackage.getImplementationVersion,
           // read version of H2 library from Manifest
-          "com.h2database" % "h2" % classOf[org.h2.Driver].getPackage.getImplementationVersion,
+          "com.h2database" % "h2" % classOf[org.h2.Driver].getPackage.getImplementationVersion
         ),
         // stub out required Liquibase settings to make them optional
         liquibaseDriver := "",
@@ -287,7 +287,7 @@ object SbtLiquibaseSlickCodegen extends AutoPlugin {
                   _ =>
                     updateCache
                 },
-                Duration.Inf,
+                Duration.Inf
               )
             }.value
 
@@ -307,6 +307,6 @@ object SbtLiquibaseSlickCodegen extends AutoPlugin {
           } else {
             compile in Compile
           }
-        }.value,
+        }.value
       )
 }
