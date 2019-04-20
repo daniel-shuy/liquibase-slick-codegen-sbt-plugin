@@ -8,6 +8,11 @@ licenses := Seq("Apache License, Version 2.0" -> url("http://www.apache.org/lice
 
 homepage := Some(url("https://github.com/daniel-shuy/liquibase-slick-codegen-sbt-plugin"))
 
+scmInfo := Some(ScmInfo(
+  url("https://github.com/daniel-shuy/liquibase-slick-codegen-sbt-plugin"),
+  "git@github.com:daniel-shuy/liquibase-slick-codegen-sbt-plugin.git"
+))
+
 addSbtPlugin("com.permutive" % "sbt-liquibase" % "1.1.0")
 
 crossSbtVersions := Seq(
