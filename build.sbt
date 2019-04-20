@@ -13,6 +13,10 @@ scmInfo := Some(ScmInfo(
   "git@github.com:daniel-shuy/liquibase-slick-codegen-sbt-plugin.git"
 ))
 
+developers := List(
+  Developer("daniel-shuy", "Daniel Shuy", "daniel_shuy@hotmail.com", url("https://github.com/daniel-shuy")),
+)
+
 addSbtPlugin("com.permutive" % "sbt-liquibase" % "1.1.0")
 
 crossSbtVersions := Seq(
