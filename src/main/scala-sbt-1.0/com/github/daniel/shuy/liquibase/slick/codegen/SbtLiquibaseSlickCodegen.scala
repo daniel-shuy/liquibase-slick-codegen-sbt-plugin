@@ -273,9 +273,7 @@ object SbtLiquibaseSlickCodegen extends AutoPlugin {
         liquibaseSlickCodegenOutputClass := "Tables",
         liquibaseSlickCodegenProfile := H2Profile,
         // default to bundled SourceCodeGenerator
-        liquibaseSlickCodegenSourceCodeGeneratorFactory := { model: Model =>
-          new SourceCodeGenerator(model)
-        },
+        liquibaseSlickCodegenSourceCodeGeneratorFactory := SourceCodeGenerator.apply,
         liquibaseSlickCodegen := Def.taskDyn {
           (liquibaseUpdate in LiquibaseSlickCodegen).value
 
