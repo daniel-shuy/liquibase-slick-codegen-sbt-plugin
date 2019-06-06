@@ -31,3 +31,7 @@ class SourceCodeGenerator(model: Model)
       fileName: String
   ): Unit = super.writeToFile(profile, folder, pkg, container, fileName)
 }
+
+object SourceCodeGenerator {
+  def apply(model: Model): SourceCodeGenerator = new SourceCodeGenerator(model)
+}
