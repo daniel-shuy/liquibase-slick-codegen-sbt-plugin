@@ -5,4 +5,4 @@ sys.props.get("plugin.version") match {
 }
 
 addSbtPlugin("com.github.daniel-shuy" % "sbt-scripted-scalatest" % "1.1.1")
-libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.5"
+libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.8"
