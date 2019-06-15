@@ -56,11 +56,11 @@ abstract class AbstractSbtLiquibaseSlickCodegenPlugin extends AutoPlugin {
 
   val SlickDriver: JdbcProfile
 
-  val JdbcDriver: String = classOf[org.h2.Driver].getName
-  val DbName: String = "sbt_liquibase_slick_codegen"
-  val Username: String = ""
-  val Password: String = random.nextString(random.nextInt(25)) // generate a random password
-  val CacheFileName: String = "sbt_liquibase-slick_codegen_cache"
+  val jdbcDriver: String = classOf[org.h2.Driver].getName
+  val dbName: String = "sbt_liquibase_slick_codegen"
+  val username: String = ""
+  val password: String = random.nextString(random.nextInt(25)) // generate a random password
+  val cacheFileName: String = "sbt_liquibase-slick_codegen_cache"
 
   override def requires: Plugins = SbtLiquibase
 
@@ -85,7 +85,7 @@ abstract class AbstractSbtLiquibaseSlickCodegenPlugin extends AutoPlugin {
 
   private[this] lazy val cacheDir = Def.setting[File] {
     // create cache in subfolders corresponding to configured package and class so that cache is invalidated if either is changed
-    target.value / CacheFileName / liquibaseSlickCodegenOutputPackage.value / liquibaseSlickCodegenOutputClass.value
+    target.value / cacheFileName / liquibaseSlickCodegenOutputPackage.value / liquibaseSlickCodegenOutputClass.value
   }
 
   /**
@@ -190,9 +190,9 @@ abstract class AbstractSbtLiquibaseSlickCodegenPlugin extends AutoPlugin {
     val dbFactory = SlickDriver.api.Database
     val db = dbFactory.forURL(
       url,
-      Username,
-      Password,
-      driver = JdbcDriver,
+      username,
+      password,
+      driver = jdbcDriver,
       keepAliveConnection = true
     )
 
@@ -242,20 +242,20 @@ abstract class AbstractSbtLiquibaseSlickCodegenPlugin extends AutoPlugin {
     inConfig(LiquibaseSlickCodegen)(
       SbtLiquibase.liquibaseBaseSettings(LiquibaseSlickCodegen) ++
         Seq(
-          liquibaseDriver := JdbcDriver,
+          liquibaseDriver := jdbcDriver,
           // create an embedded database with Auto Mixed Mode
           // (Server is required for Liquibase and Slick Codegen to share a database, as both do not share the same Class Loader)
           // persist database to a file (Auto Mixed Mode cannot be used with in-memory databases)
-          liquibaseUrl := s"jdbc:h2:file:${target.value.getPath}/$DbName;AUTO_SERVER=TRUE;DATABASE_TO_UPPER=FALSE",
-          liquibaseUsername := Username,
-          liquibasePassword := Password,
+          liquibaseUrl := s"jdbc:h2:file:${target.value.getPath}/$dbName;AUTO_SERVER=TRUE;DATABASE_TO_UPPER=FALSE",
+          liquibaseUsername := username,
+          liquibasePassword := password,
           liquibaseChangelog := (liquibaseChangelog in Compile).value,
           dependencyClasspath := (dependencyClasspath in Compile).value,
           // Delete pre-existing embedded database before performing update
           liquibaseUpdate := liquibaseUpdate
             .dependsOn(Def.task[Unit] {
               logger.value.info("Performing cleanup:")
-              DeleteDbFiles.execute(target.value.getPath, DbName, false)
+              DeleteDbFiles.execute(target.value.getPath, dbName, false)
             })
             .value
         )
