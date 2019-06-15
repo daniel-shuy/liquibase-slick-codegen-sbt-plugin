@@ -54,7 +54,7 @@ object AbstractSbtLiquibaseSlickCodegenPlugin {
 abstract class AbstractSbtLiquibaseSlickCodegenPlugin extends AutoPlugin {
   private[this] val random = new Random(new SecureRandom())
 
-  val SlickDriver: JdbcProfile
+  val slickDriver: JdbcProfile
 
   val jdbcDriver: String = classOf[org.h2.Driver].getName
   val dbName: String = "sbt_liquibase_slick_codegen"
@@ -187,7 +187,7 @@ abstract class AbstractSbtLiquibaseSlickCodegenPlugin extends AutoPlugin {
     // prevent Slick Codegen from creating database if it doesn't exist
     val url = s"${(liquibaseUrl in LiquibaseSlickCodegen).value};IFEXISTS=TRUE"
 
-    val dbFactory = SlickDriver.api.Database
+    val dbFactory = slickDriver.api.Database
     val db = dbFactory.forURL(
       url,
       username,
@@ -196,7 +196,7 @@ abstract class AbstractSbtLiquibaseSlickCodegenPlugin extends AutoPlugin {
       keepAliveConnection = true
     )
 
-    val modelAction = SlickDriver.createModel().withPinnedSession
+    val modelAction = slickDriver.createModel().withPinnedSession
     val modelFuture = db.run(modelAction)
 
     val slickCodegenDirValue = slickCodegenDir.value
@@ -275,7 +275,7 @@ abstract class AbstractSbtLiquibaseSlickCodegenPlugin extends AutoPlugin {
         liquibaseUsername := "",
         liquibasePassword := "",
         liquibaseSlickCodegenOutputClass := "Tables",
-        liquibaseSlickCodegenProfile := SlickDriver,
+        liquibaseSlickCodegenProfile := slickDriver,
         // default to bundled SourceCodeGenerator
         liquibaseSlickCodegenSourceCodeGeneratorFactory := SourceCodeGenerator.apply,
         liquibaseSlickCodegen := Def.taskDyn {

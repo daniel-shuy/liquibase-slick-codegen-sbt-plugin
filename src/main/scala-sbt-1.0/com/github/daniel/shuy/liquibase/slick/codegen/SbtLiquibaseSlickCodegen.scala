@@ -4,7 +4,7 @@ import sbt.SettingKey
 import slick.jdbc.{H2Profile, JdbcProfile}
 
 object SbtLiquibaseSlickCodegen extends AbstractSbtLiquibaseSlickCodegenPlugin {
-  val SlickDriver = H2Profile
+  override val slickDriver = H2Profile
 
   override val autoImport: AbstractSbtLiquibaseSlickCodegenPlugin.autoImport =
     new AbstractSbtLiquibaseSlickCodegenPlugin.autoImport {
