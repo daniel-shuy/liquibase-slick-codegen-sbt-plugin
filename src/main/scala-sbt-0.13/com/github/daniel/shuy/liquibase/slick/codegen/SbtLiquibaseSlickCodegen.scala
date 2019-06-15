@@ -5,6 +5,7 @@ import slick.driver.H2Driver
 object SbtLiquibaseSlickCodegen extends AbstractSbtLiquibaseSlickCodegenPlugin {
   override val slickDriver = H2Driver
 
-  override val autoImport: AbstractSbtLiquibaseSlickCodegenPlugin.autoImport =
-    new AbstractSbtLiquibaseSlickCodegenPlugin.autoImport {}
+  object AutoImport extends AbstractSbtLiquibaseSlickCodegenPlugin.AutoImport
+
+  override val autoImport: AutoImport.type = AutoImport
 }

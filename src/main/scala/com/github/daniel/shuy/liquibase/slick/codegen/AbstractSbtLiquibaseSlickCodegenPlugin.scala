@@ -18,7 +18,7 @@ import scala.concurrent.duration.Duration
 import scala.util.{Failure, Random, Success}
 
 object AbstractSbtLiquibaseSlickCodegenPlugin {
-  trait autoImport {
+  trait AutoImport {
     lazy val LiquibaseSlickCodegen: Configuration = config(
       "liquibase-slick-codegen"
     )
@@ -52,6 +52,8 @@ object AbstractSbtLiquibaseSlickCodegenPlugin {
 }
 
 abstract class AbstractSbtLiquibaseSlickCodegenPlugin extends AutoPlugin {
+  import AbstractSbtLiquibaseSlickCodegenPlugin._
+
   private[this] val random = new Random(new SecureRandom())
 
   val slickDriver: JdbcProfile
@@ -64,7 +66,7 @@ abstract class AbstractSbtLiquibaseSlickCodegenPlugin extends AutoPlugin {
 
   override def requires: Plugins = SbtLiquibase
 
-  val autoImport: AbstractSbtLiquibaseSlickCodegenPlugin.autoImport
+  val autoImport: AutoImport
   import autoImport._
 
   private[this] lazy val logger = Def.task[Logger] {
