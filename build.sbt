@@ -30,7 +30,7 @@ developers := List(
   )
 )
 
-addSbtPlugin("com.permutive" % "sbt-liquibase" % "1.1.0")
+addSbtPlugin("com.permutive" % "sbt-liquibase" % "1.2.0")
 
 crossSbtVersions := Seq(
   "0.13.17",
