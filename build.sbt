@@ -34,7 +34,7 @@ addSbtPlugin("com.permutive" % "sbt-liquibase" % "1.1.0")
 
 crossSbtVersions := Seq(
   "0.13.17",
-  "1.2.6"
+  "1.3.2"
 )
 
 def slickVersion(scalaVersion: String) =
