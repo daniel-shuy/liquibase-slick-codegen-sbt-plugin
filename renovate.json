@@ -7,10 +7,13 @@
   "major": {
     "automerge": false
   },
-  "packageRules": [{
-    "packageNames": [
-      "org.scalameta:sbt-scalafmt"
-    ],
-    "automerge": false
-  }]
+  "packageRules": [
+    {
+      "packageNames": [
+        "org.scalameta:sbt-scalafmt",
+        "com.permutive:sbt-liquibase"
+      ],
+      "automerge": false
+    }
+  ]
 }
