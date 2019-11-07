@@ -8,16 +8,16 @@ language: scala
 # Ubuntu Trusty (https://docs.travis-ci.com/user/reference/trusty/)
 dist: trusty
 
-install:
-  - git checkout -qf $TRAVIS_BRANCH
+# https://docs.scala-lang.org/overviews/jdk-compatibility/overview.html#running-versus-compiling
+jdk: openjdk8
 
 jobs:
   include:
-    - name: test
+    - stage: test
       if: (NOT branch =~ /^release\/.*$/)
       # When running scripted tests targeting multiple SBT versions, we must first publish locally for all SBT versions
-      script: sbt "^ publishLocal" "^ scripted"
-    - name: release
+      script: sbt "^ publishLocal" "scripted"
+    - stage: release
       if: (branch =~ /^release\/.*$/)
       env:
         - BINTRAY_USER=daniel-shuy
@@ -26,9 +26,27 @@ jobs:
         # GH_TOKEN
         - secure: miDFPDDbjsg7j9cQqNdquW8Lsqo8LW3DEK5y2V3ljo9KA12Yqfbch2ZMCmo2IR8xp2g3dajT8b6tJ7qqEglUwXbFFk0vV3rGEL8OOTiEw7DcxQc1koggMXCqwGyM34WERXI5LkjveVg2cSvg+uGsEUdH1+9j6wbp0A+ilifhtUuckD6ZXOOb7SGLSNDm9kl28oXnlaxSc7hJVDfoF1hnJpA3xlNEb3fqmpGFV0BG8TaS4b2+7Qc6BIZTa/DgYVMvw9jcNIVGIFbY4UG3jnekyhEimhZ6v7QQH8/r/IG/L+fr/pLqub9ZhEar4iEuMIwi4vc+kykMGLMjF41W88qV5j+iF3+qD5+cQRGiP9sAwt0QUMF6cGhLxs0rVV2RVVKNjr+k3UfyrxJBeyo25bUbVGSLOIP3lZCPe9lLzIUa/VhxxMCNuOtHdF2XSSTfFELbTmFpkLCBysUpDDjzTws7LqtBaVSUqQ/klVdmgZXELjY6RLoUxOBzvXYSAog0ZTJEZBdSF5pDcYGoHFq4lMGvcB/o9DVX5cns90xQm+VpkKGVyRSYCe0VVEmhw4rxcDdNFCVYhHGa+QaYrbcx4kZ46w59h2Y9fhdxOR41q+ygWgMhBPXaPqM03Nsoee9KyZhlw1vjFN23/RZTlZY3qH3ySgcqzgcY2Oi11YSKedSu2Ck=
         # Extract release version from branch name
-        - RELEASE_VERSION=`echo $TRAVIS_BRANCH | sed -r 's/^release\/(.*)$/\1/'`
-      before_script: git remote set-url origin https://$GH_TOKEN@github.com/$TRAVIS_REPO_SLUG.git
-      script: sbt "^ release release-version $RELEASE_VERSION with-defaults"
+        - RELEASE_VERSION=`echo $TRAVIS_BRANCH | sed --regexp-extended 's/^release\/(.*)$/\1/'`
+        - GIT_MERGE_AUTOEDIT=no
+      before_install:
+        # git-flow AVH (https://github.com/petervanderdoes/gitflow-avh/wiki/Installing-on-Linux,-Unix,-etc.#user-content-ubuntu)
+        - sudo add-apt-repository --yes ppa:pdoes/gitflow-avh
+        # use add-apt-repository --update in Ubuntu 17+ (Artful)
+        - sudo apt-get update
+        - sudo apt-get --yes install git-flow
+      install:
+        - git remote set-url origin https://$GH_TOKEN@github.com/$TRAVIS_REPO_SLUG.git
+        - git remote set-branches --add origin master
+        - git remote set-branches --add origin develop
+        - git fetch origin
+        - git checkout --force -b master --track origin/master
+        - git checkout --force -b develop --track origin/develop
+        - git checkout --force $TRAVIS_BRANCH
+        - git config gitflow.prefix.release release/
+        - git flow init --defaults
+      script: sbt "release release-version $RELEASE_VERSION with-defaults"
+      # --message option is required to suppress editor prompt
+      after_success: git flow release finish --showcommands --push --message 'Release'
 
 # These directories are cached to S3 at the end of the build
 cache:

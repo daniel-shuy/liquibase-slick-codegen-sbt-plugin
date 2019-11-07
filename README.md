@@ -2,14 +2,15 @@
 
 [ ![Download](https://api.bintray.com/packages/daniel-shuy/sbt-plugins/sbt-liquibase-slick-codegen/images/download.svg) ](https://bintray.com/daniel-shuy/sbt-plugins/sbt-liquibase-slick-codegen/_latestVersion)
 
-| Branch | Travis CI | Codacy |
-| ------ | --------- | ------ |
-| Master | [![Build Status](https://travis-ci.org/daniel-shuy/liquibase-slick-codegen-sbt-plugin.svg?branch=master)](https://travis-ci.org/daniel-shuy/liquibase-slick-codegen-sbt-plugin) | [![Codacy Badge](https://api.codacy.com/project/badge/Grade/840edcbf1cd3464ea1d4597362ad7588?branch=master)](https://www.codacy.com/app/daniel-shuy/liquibase-slick-codegen-sbt-plugin?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=daniel-shuy/liquibase-slick-codegen-sbt-plugin&amp;utm_campaign=Badge_Grade) |
-| Develop | [![Build Status](https://travis-ci.org/daniel-shuy/liquibase-slick-codegen-sbt-plugin.svg?branch=develop)](https://travis-ci.org/daniel-shuy/liquibase-slick-codegen-sbt-plugin) | [![Codacy Badge](https://api.codacy.com/project/badge/Grade/840edcbf1cd3464ea1d4597362ad7588?branch=develop)](https://www.codacy.com/app/daniel-shuy/liquibase-slick-codegen-sbt-plugin?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=daniel-shuy/liquibase-slick-codegen-sbt-plugin&amp;utm_campaign=Badge_Grade) |
+| Branch  | Travis CI                                                                                                                                                                        | CodeFactor                                                                                                                                                                                                                             | Codacy | Better Code Hub                                                                                                                                                                                                                                                                                                                 |
+| ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -- |
+| Master  | [![Build Status](https://travis-ci.org/daniel-shuy/liquibase-slick-codegen-sbt-plugin.svg?branch=master)](https://travis-ci.org/daniel-shuy/liquibase-slick-codegen-sbt-plugin)  | [![CodeFactor](https://www.codefactor.io/repository/github/daniel-shuy/liquibase-slick-codegen-sbt-plugin/badge/master)](https://www.codefactor.io/repository/github/daniel-shuy/liquibase-slick-codegen-sbt-plugin/overview/master)   | [![Codacy Badge](https://api.codacy.com/project/badge/Grade/840edcbf1cd3464ea1d4597362ad7588?branch=master)](https://www.codacy.com/app/daniel-shuy/liquibase-slick-codegen-sbt-plugin?utm_source=github.com&utm_medium=referral&utm_content=daniel-shuy/liquibase-slick-codegen-sbt-plugin&utm_campaign=Badge_Grade) | [![BCH compliance](https://bettercodehub.com/edge/badge/daniel-shuy/liquibase-slick-codegen-sbt-plugin?branch=master)](https://bettercodehub.com/) |
+| Develop | [![Build Status](https://travis-ci.org/daniel-shuy/liquibase-slick-codegen-sbt-plugin.svg?branch=develop)](https://travis-ci.org/daniel-shuy/liquibase-slick-codegen-sbt-plugin) | [![CodeFactor](https://www.codefactor.io/repository/github/daniel-shuy/liquibase-slick-codegen-sbt-plugin/badge/develop)](https://www.codefactor.io/repository/github/daniel-shuy/liquibase-slick-codegen-sbt-plugin/overview/develop) | [![Codacy Badge](https://api.codacy.com/project/badge/Grade/840edcbf1cd3464ea1d4597362ad7588?branch=develop)](https://www.codacy.com/app/daniel-shuy/liquibase-slick-codegen-sbt-plugin?utm_source=github.com&utm_medium=referral&utm_content=daniel-shuy/liquibase-slick-codegen-sbt-plugin&utm_campaign=Badge_Grade) | [![BCH compliance](https://bettercodehub.com/edge/badge/daniel-shuy/liquibase-slick-codegen-sbt-plugin?branch=develop)](https://bettercodehub.com/) |
 
-| Plugin Version | SBT Version   | Slick Version | sbt-liquibase Version |
-| -------------- | ------------- | ------------- | --------------------- |
-| 1.x.x          | 0.13.x, 1.x.x | 3.x.x         | 1.1.0                 |
+| Plugin Version | SBT Version   | Slick Version | sbt-liquibase Version | Liquibase Version |
+| -------------- | ------------- | ------------- | --------------------- | ----------------- |
+| 1.0.x          | 0.13.x, 1.x.x | 3.x.x         | 1.1.0                 | 3.6.1+            |
+| 1.1.x          | 0.13.x, 1.x.x | 3.x.x         | 1.2.0                 | 3.8.0+            |
 
 A SBT plugin that uses [sbt-liquibase](https://github.com/permutive/sbt-liquibase-plugin) and [Slick Codegen](http://slick.lightbend.com/doc/3.0.0/code-generation.html) to generate Slick database schema code from a Liquibase changelog file.
 
@@ -18,33 +19,41 @@ The database schema code is generated in the Source folder (because the generate
 The plugin attaches itself to the `compile` phase, and will run before the compilation takes place (the generated Slick database schema code will be compiled as well).
 It is skipped on subsequent runs if the Liquibase changelog file hasn't been modified, and the Slick database schema code file hasn't been deleted.
 
-__Warning:__ This plugin currently depends on an experimental feature in Slick Codegen. This plugin uses the [H2 Database](http://www.h2database.com/html/main.html) to generate the Slick database schema code. Currently, using a different database profile from the one used to generate the database schema code is considered experimental and is not officially supported by Slick (see http://slick.lightbend.com/doc/3.0.0/code-generation.html#generated-code for more information).
+**Warning:** This plugin currently depends on an experimental feature in Slick Codegen. This plugin uses the [H2 Database](http://www.h2database.com/html/main.html) to generate the Slick database schema code. Currently, using a different database profile from the one used to generate the database schema code is considered experimental and is not officially supported by Slick (see <http://slick.lightbend.com/doc/3.0.0/code-generation.html#generated-code> for more information).
 
 ## Limitations
+
 Because the plugin uses the Liquibase changelog file to create tables in a temporary H2 database, there are some limitations when configuring the Liquibase changelog file. If possible, avoid using them. If not, refer below for the workarounds. Make sure to test the generated Slick database schema code thoroughly.
 
+The Liquibase version must be 3.6.1 or above, due to [sbt-liquibase](https://github.com/permutive/sbt-liquibase-plugin).
+
 ### Database-specific Preconditions
-If a [\<dbms> precondition](http://www.liquibase.org/documentation/preconditions.html#ltdbmsgt) with a database other than H2 is used, add `<dbms type="h2" />` as well.
+
+If a [\\<dbms> precondition](http://www.liquibase.org/documentation/preconditions.html#ltdbmsgt) with a database other than H2 is used, add `<dbms type="h2" />` as well.
 
 ### Unsupported Changes
-If a [change](http://www.liquibase.org/documentation/changes/index.html) that isn't supported by H2 (eg. [\<renameView>](http://www.liquibase.org/documentation/changes/rename_view.html)) is used, add corresponding [SQL](http://www.liquibase.org/documentation/changes/sql.html) or a combination of changes to achieve the same result, with the `<dbms type="h2" />` precondition.
 
-Eg. for `<renameView>`, use [\<dropView>](http://www.liquibase.org/documentation/changes/drop_view.html) and [\<createView>](http://www.liquibase.org/documentation/changes/create_view.html) to achieve the same result.
+If a [change](http://www.liquibase.org/documentation/changes/index.html) that isn't supported by H2 (eg. [\\<renameView>](http://www.liquibase.org/documentation/changes/rename_view.html)) is used, add corresponding [SQL](http://www.liquibase.org/documentation/changes/sql.html) or a combination of changes to achieve the same result, with the `<dbms type="h2" />` precondition.
+
+Eg. for `<renameView>`, use [\\<dropView>](http://www.liquibase.org/documentation/changes/drop_view.html) and [\\<createView>](http://www.liquibase.org/documentation/changes/create_view.html) to achieve the same result.
 
 ### Database-specific SQL
-If database-specific SQL is used with [\<sql>](http://www.liquibase.org/documentation/changes/sql.html), add a [\<dbms> precondition](http://www.liquibase.org/documentation/preconditions.html#ltdbmsgt) to limit it to the database type that supports it, then add corresponding SQL for H2 that achieves the same result in a `<sql>` change, with the `<dbms type="h2" />` precondition.
+
+If database-specific SQL is used with [\\<sql>](http://www.liquibase.org/documentation/changes/sql.html), add a [\\<dbms> precondition](http://www.liquibase.org/documentation/preconditions.html#ltdbmsgt) to limit it to the database type that supports it, then add corresponding SQL for H2 that achieves the same result in a `<sql>` change, with the `<dbms type="h2" />` precondition.
 
 ## Usage
 
 ### Step 1: Include the plugin in your build
 
 Add the following to your `project/plugins.sbt`:
+
 ```scala
-addSbtPlugin("com.github.daniel-shuy" % "sbt-liquibase-slick-codegen" % "1.0.0")
+addSbtPlugin("com.github.daniel-shuy" % "sbt-liquibase-slick-codegen" % "1.0.1")
 ```
 
 Override the `slick-codegen` dependency version with the version of Slick you are using in your project.
 The dependency version can be extracted out into a Scala `object` in the `project` folder to allow it to be referenced in both `project/plugins.sbt` and `build.sbt` (there are many ways to do this), eg.
+
 ```scala
 // project/project/Dependencies.scala
 import sbt._
@@ -59,14 +68,16 @@ object Dependencies {
     }
 }
 ```
+
 ```scala
 // project/plugins.sbt
-addSbtPlugin("com.github.daniel-shuy" % "sbt-liquibase-slick-codegen" % "1.0.0")
+addSbtPlugin("com.github.daniel-shuy" % "sbt-liquibase-slick-codegen" % "1.0.1")
 libraryDependencies += "com.typesafe.slick" %% "slick-codegen" % Dependencies.slickVersion(scalaVersion.value)
 
 // allows build.sbt to reference Dependencies
 unmanagedSourceDirectories in Compile += (baseDirectory in Compile).value / "project"
 ```
+
 ```scala
 // build.sbt
 libraryDependencies ++= Seq(
@@ -75,28 +86,38 @@ libraryDependencies ++= Seq(
 )
 ```
 
+Override the `liquibase-core` dependency version with the version of Liquibase you wise to use:
+
+```scala
+addSbtPlugin("com.github.daniel-shuy" % "sbt-liquibase-slick-codegen" % "1.0.1")
+libraryDependencies += "org.liquibase" % "liquibase-core" % "3.6.3"
+```
+
 ### Step 2: Enable the plugin for your project
 
 Add the following to your `build.sbt`:
+
 ```scala
 enablePlugins(SbtLiquibaseSlickCodegen)
 ```
 
 ### Step 3: Create the Liquibase changelog file
 
-See http://www.liquibase.org/documentation/databasechangelog.html
+See <http://www.liquibase.org/documentation/databasechangelog.html>
 
 ### Step 4: Configure project settings for the plugin
 
 See [Settings](#settings).
 
 Minimal example:
+
 ```scala
 enablePlugins(SbtLiquibaseSlickCodegen)
 
 liquibaseSlickCodegenOutputPackage := "com.foo.bar"
 liquibaseSlickCodegenOutputClass := "Tables"
 ```
+
 This will create the Slick database schema code as `com.foo.bar.Tables.scala`
 
 ### Step 5: Execute the plugin
@@ -107,11 +128,11 @@ Run `sbt compile` or `sbt liquibaseSlickCodegen` to generate the Slick database 
 
 | Setting                                     | Type                         | Description                                                                                                                                                                                                                         |
 | ------------------------------------------- | ---------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| liquibaseChangelog                          | File                         | __Optional__. Your Liquibase changelog file. Defaults to `src/main/migrations/changelog.xml`.                                                                                                                          |
-| liquibaseSlickCodegenOutputPackage          | String                       | __Required__. Package the generated Slick database schema code should be created in.                                                                                                                                                |
-| liquibaseSlickCodegenOutputClass            | String                       | __Optional__. The class name for the generated Slick database schema code, without the `.scala` extension. Defaults to `Tables`.                                                                                                    |
-| liquibaseSlickCodegenProfile                | JdbcProfile                  | __Optional__. The Slick database profile for the generated Slick database schema code. __This should be substituted with the Slick driver implementation for the database you intend to use.__ Defaults to `slick.driver.H2Driver`. |
-| liquibaseSlickCodegenSourceGeneratorFactory | Model => SourceCodeGenerator | __Optional__. The factory for the SourceCodeGenerator implementation. See [Slick Codegen customization](#slick-codegen-customization). Defaults to the bundled SourceCodeGenerator.                                                 |
+| liquibaseChangelog                          | File                         | **Optional**. Your Liquibase changelog file. Defaults to `src/main/migrations/changelog.xml`.                                                                                                                                       |
+| liquibaseSlickCodegenOutputPackage          | String                       | **Required**. Package the generated Slick database schema code should be created in.                                                                                                                                                |
+| liquibaseSlickCodegenOutputClass            | String                       | **Optional**. The class name for the generated Slick database schema code, without the `.scala` extension. Defaults to `Tables`.                                                                                                    |
+| liquibaseSlickCodegenProfile                | JdbcProfile                  | **Optional**. The Slick database profile for the generated Slick database schema code. **This should be substituted with the Slick driver implementation for the database you intend to use.** Defaults to `slick.driver.H2Driver`. |
+| liquibaseSlickCodegenSourceGeneratorFactory | Model => SourceCodeGenerator | **Optional**. The factory for the SourceCodeGenerator implementation. See [Slick Codegen customization](#slick-codegen-customization). Defaults to the bundled SourceCodeGenerator.                                                 |
 
 ## Tasks
 
@@ -122,6 +143,7 @@ Run `sbt compile` or `sbt liquibaseSlickCodegen` to generate the Slick database 
 ## Notes
 
 ### sbt-liquibase
+
 A project that enables the `SbtLiquibaseSlickCodegen` plugin automatically enables the `SbtLiquibase` plugin as well.
 
 The `sbt-liquibase` plugin can still be used as normal alongside `sbt-liquibase-slick-codegen`.
@@ -130,26 +152,28 @@ Note that the `liquibaseChangelog` setting is shared among both plugins.
 
 This plugin used to depend on [sbtliquibase/sbt-liquibase-plugin](https://github.com/sbtliquibase/sbt-liquibase-plugin), but has been changed to depend on [permutive/sbt-liquibase](https://github.com/permutive/sbt-liquibase-plugin) (a fork of [sbtliquibase/sbt-liquibase-plugin](https://github.com/sbtliquibase/sbt-liquibase-plugin)) since version 1.0.0, in order to support SBT 1.0.
 
-
 ### Play Framework
+
 When using this plugin with [Play Framework](https://www.playframework.com/), remember to configure `liquibaseChangelog` to point to the correct path, eg.
+
 ```scala
 liquibaseChangelog := file("conf/migrations/changelog.xml")
 ```
 
 Since we are using [Liquibase](http://www.liquibase.org/) instead of [Play Slick Evolutions](https://www.playframework.com/documentation/latest/Evolutions) for Database Migration, it is recommended to use [Slick](http://slick.lightbend.com/) standalone, instead of the [play-slick](https://www.playframework.com/documentation/latest/PlaySlick) module, so that you are not bound to the version of Slick supported by play-slick.
 
-
 ### Multiple Liquibase changelog files
+
 You can have multiple Liquibase changelog files, then [include](http://www.liquibase.org/documentation/include.html) all of them in a "master" changelog file, then configure `liquibaseChangelog` to point to it.
 
-
 ### Slick Codegen customization
+
 You can still perform [Slick Codegen customizations](http://slick.lightbend.com/doc/3.0.0/code-generation.html#customization) with this plugin.
 
 Create a class in `project` that extends `com.github.daniel.shuy.liquibase.slick.codegen.SourceCodeGenerator`, then override methods to customize Slick Codegen's behavior, eg.
 
 `project/CustomSourceCodeGenerator.scala`:
+
 ```scala
 import com.github.daniel.shuy.liquibase.slick.codegen.SourceCodeGenerator
 import slick.model.Model
@@ -159,10 +183,10 @@ class CustomSourceCodeGenerator(model: Model) extends SourceCodeGenerator(model)
 ```
 
 then in `build.sbt`, assign the constructor as the `liquibaseSlickCodegenSourceCodeGeneratorFactory`, eg.
+
 ```scala
 liquibaseSlickCodegenSourceCodeGeneratorFactory := (model => new CustomSourceCodeGenerator(model))
 ```
-
 
 ## Licence
 
@@ -170,6 +194,6 @@ Copyright 2017, 2018, 2019 Daniel Shuy
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
 
-http://www.apache.org/licenses/LICENSE-2.0
+<http://www.apache.org/licenses/LICENSE-2.0>
 
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.

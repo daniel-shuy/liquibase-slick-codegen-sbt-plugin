@@ -1,4 +1,10 @@
 import ReleaseTransformations._
+
+releaseIgnoreUntrackedFiles := true
+
+// skip Travis CI build
+releaseCommitMessage := s"[ci skip] ${releaseCommitMessage.value}"
+
 releaseProcess := Seq[ReleaseStep](
   checkSnapshotDependencies,
   inquireVersions,
@@ -6,10 +12,11 @@ releaseProcess := Seq[ReleaseStep](
   releaseStepCommandAndRemaining("^ test"),
   // When running scripted tests targeting multiple SBT versions, we must first publish locally for all SBT versions
   releaseStepCommandAndRemaining("^ publishLocal"),
-  releaseStepCommandAndRemaining("^ scripted"),
+  releaseStepInputTask(scripted),
   setReleaseVersion,
   commitReleaseVersion,
-  tagRelease,
+  // don't tag, leave it to git flow
+  // tagRelease,
   releaseStepCommandAndRemaining("^ publish"),
   releaseStepTask(bintrayRelease),
   setNextVersion,

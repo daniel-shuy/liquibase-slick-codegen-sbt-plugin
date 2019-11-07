@@ -12,10 +12,26 @@ import slick.model.Model
   *
   * @param model Slick data model for which code should be generated.
   */
-class SourceCodeGenerator(model: Model) extends slick.codegen.SourceCodeGenerator(model) {
+class SourceCodeGenerator(model: Model)
+    extends slick.codegen.SourceCodeGenerator(model) {
   // prevent this method from being overridden
-  override final def writeStringToFile(content: String, folder: String, pkg: String, fileName: String): Unit = super.writeStringToFile(content, folder, pkg, fileName)
+  override final def writeStringToFile(
+      content: String,
+      folder: String,
+      pkg: String,
+      fileName: String
+  ): Unit = super.writeStringToFile(content, folder, pkg, fileName)
 
   // prevent this method from being overridden
-  override final def writeToFile(profile: String, folder: String, pkg: String, container: String, fileName: String): Unit = super.writeToFile(profile, folder, pkg, container, fileName)
+  override final def writeToFile(
+      profile: String,
+      folder: String,
+      pkg: String,
+      container: String,
+      fileName: String
+  ): Unit = super.writeToFile(profile, folder, pkg, container, fileName)
+}
+
+object SourceCodeGenerator {
+  def apply(model: Model): SourceCodeGenerator = new SourceCodeGenerator(model)
 }
