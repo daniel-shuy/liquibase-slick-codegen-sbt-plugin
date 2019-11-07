@@ -39,8 +39,8 @@ crossSbtVersions := Seq(
 
 def slickVersion(scalaVersion: String) =
   CrossVersion.partialVersion(scalaVersion) match {
-    case Some((2, 10)) | Some((2, 11)) => "3.0.0"
-    case Some((2, 12))                 => "3.2.0"
+    case Some((2, 10))                 => "3.0.0"
+    case Some((2, 11)) | Some((2, 12)) => "3.3.2"
     case _ =>
       throw new IllegalArgumentException(
         s"Unsupported Scala version $scalaVersion"
