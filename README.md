@@ -9,7 +9,8 @@
 
 | Plugin Version | SBT Version   | Slick Version | sbt-liquibase Version | Liquibase Version |
 | -------------- | ------------- | ------------- | --------------------- | ----------------- |
-| 1.x.x          | 0.13.x, 1.x.x | 3.x.x         | 1.1.0                 | 3.6.1+            |
+| 1.0.x          | 0.13.x, 1.x.x | 3.x.x         | 1.1.0                 | 3.6.1+            |
+| 1.1.x          | 0.13.x, 1.x.x | 3.x.x         | 1.2.0                 | 3.8.0+            |
 
 A SBT plugin that uses [sbt-liquibase](https://github.com/permutive/sbt-liquibase-plugin) and [Slick Codegen](http://slick.lightbend.com/doc/3.0.0/code-generation.html) to generate Slick database schema code from a Liquibase changelog file.
 
