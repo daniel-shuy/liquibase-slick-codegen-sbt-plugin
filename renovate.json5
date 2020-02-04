@@ -10,6 +10,7 @@
   },
   packageRules: [
     {
+      // disable automerge for dependencies that require documentation update
       packageNames: [
         'org.scalameta:sbt-scalafmt',
         'com.permutive:sbt-liquibase',
