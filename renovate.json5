@@ -1,19 +1,19 @@
 {
-  "extends": [
-    "config:base"
+  extends: [
+    'config:base',
   ],
-  "rebaseStalePrs": true,
-  "automerge": true,
-  "major": {
-    "automerge": false
+  rebaseStalePrs: true,
+  automerge: true,
+  major: {
+    automerge: false,
   },
-  "packageRules": [
+  packageRules: [
     {
-      "packageNames": [
-        "org.scalameta:sbt-scalafmt",
-        "com.permutive:sbt-liquibase"
+      packageNames: [
+        'org.scalameta:sbt-scalafmt',
+        'com.permutive:sbt-liquibase',
       ],
-      "automerge": false
-    }
-  ]
+      automerge: false,
+    },
+  ],
 }
