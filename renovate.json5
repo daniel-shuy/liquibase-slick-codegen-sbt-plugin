@@ -1,0 +1,33 @@
+{
+  extends: [
+    'config:base',
+  ],
+  rebaseStalePrs: true,
+  stabilityDays: 1,
+  automerge: true,
+  major: {
+    automerge: false,
+  },
+  packageRules: [
+    {
+      /*
+        scalatest follows the maven version scheme, but suffixes snapshot versions with -SNAP instead of -SNAPSHOT.
+        Using the semver version scheme allows it to handle all Maven pre-release qualifiers,
+        as well as the SNAP qualifier.
+        TODO: Remove after https://github.com/scalatest/scalatest/issues/1766 is fixed
+      */
+      packageNames: [
+        'org.scalatest:scalatest',
+      ],
+      versionScheme: 'semver',
+    },
+    {
+      // disable automerge for dependencies that require documentation update
+      packageNames: [
+        'org.scalameta:sbt-scalafmt',
+        'com.permutive:sbt-liquibase',
+      ],
+      automerge: false,
+    },
+  ],
+}
