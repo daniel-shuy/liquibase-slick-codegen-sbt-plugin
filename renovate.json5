@@ -19,7 +19,7 @@
       packageNames: [
         'org.scalatest:scalatest',
       ],
-      versionScheme: 'semver',
+      versioning: 'semver',
     },
     {
       packageNames: [
