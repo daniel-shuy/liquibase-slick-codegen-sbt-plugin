@@ -25,7 +25,19 @@
       packageNames: [
         'com.permutive:sbt-liquibase',
       ],
+      updateTypes: [
+        'minor',
+      ],
       automerge: false,
+    },
+    {
+      packageNames: [
+        'com.permutive:sbt-liquibase',
+      ],
+      updateTypes: [
+        'patch',
+      ],
+      enabled: false,
     },
     {
       packageNames: [
