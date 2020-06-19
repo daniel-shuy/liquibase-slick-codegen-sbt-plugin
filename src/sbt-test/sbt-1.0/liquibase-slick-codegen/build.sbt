@@ -2,7 +2,7 @@ import ch.qos.logback.classic.{Level, Logger}
 import com.github.daniel.shuy.sbt.scripted.scalatest.SbtScriptedScalaTest.FullStacks
 import com.github.daniel.shuy.sbt.scripted.scalatest.ScriptedScalaTestSuiteMixin
 import org.scalatest.Assertions._
-import org.scalatest.WordSpec
+import org.scalatest.wordspec.AnyWordSpec
 import org.slf4j.LoggerFactory
 
 import scala.util.Random
@@ -21,7 +21,7 @@ lazy val testLiquibaseSlickCodegen = project
     liquibaseChangelog := file("changelog.xml"),
 
     scriptedScalaTestStacks := FullStacks,
-    scriptedScalaTestSpec := Some(new WordSpec with ScriptedScalaTestSuiteMixin {
+    scriptedScalaTestSpec := Some(new AnyWordSpec with ScriptedScalaTestSuiteMixin {
       override val sbtState: State = state.value
 
       "liquibase-slick-codegen" should {
