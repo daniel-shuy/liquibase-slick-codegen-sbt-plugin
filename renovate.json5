@@ -22,12 +22,19 @@
       versionScheme: 'semver',
     },
     {
-      // disable automerge for dependencies that require documentation update
       packageNames: [
-        'org.scalameta:sbt-scalafmt',
         'com.permutive:sbt-liquibase',
       ],
       automerge: false,
+    },
+    {
+      packageNames: [
+        'org.scalameta:sbt-scalafmt',
+      ],
+      automerge: false,
+      prBodyNotes: [
+        ':warning: .scalafmt.conf must be updated manually',
+      ],
     },
   ],
 }
