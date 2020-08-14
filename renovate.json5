@@ -1,9 +1,10 @@
 {
   extends: [
-    'config:base',
+    "config:base",
   ],
-  rebaseStalePrs: true,
-  stabilityDays: 1,
+  rebaseWhen: "behind-base-branch",
+  prCreation: "not-pending",
+  dependencyDashboard: true,
   automerge: true,
   major: {
     automerge: false,
@@ -17,17 +18,39 @@
         TODO: Remove after https://github.com/scalatest/scalatest/issues/1766 is fixed
       */
       packageNames: [
-        'org.scalatest:scalatest',
+        "org.scalatest:scalatest",
       ],
-      versionScheme: 'semver',
+      versioning: "semver",
     },
     {
-      // disable automerge for dependencies that require documentation update
       packageNames: [
-        'org.scalameta:sbt-scalafmt',
-        'com.permutive:sbt-liquibase',
+        "com.permutive:sbt-liquibase",
+      ],
+      updateTypes: [
+        "minor",
       ],
       automerge: false,
+      prBodyNotes: [
+        ":warning: README.md must be updated manually",
+      ],
+    },
+    {
+      packageNames: [
+        "com.permutive:sbt-liquibase",
+      ],
+      updateTypes: [
+        "patch",
+      ],
+      enabled: false,
+    },
+    {
+      packageNames: [
+        "org.scalameta:sbt-scalafmt",
+      ],
+      automerge: false,
+      prBodyNotes: [
+        ":warning: .scalafmt.conf must be updated manually",
+      ],
     },
   ],
 }
