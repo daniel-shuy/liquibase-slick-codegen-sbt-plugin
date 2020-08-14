@@ -31,6 +31,9 @@
         "minor",
       ],
       automerge: false,
+      prBodyNotes: [
+        ":warning: README.md must be updated manually",
+      ],
     },
     {
       packageNames: [
