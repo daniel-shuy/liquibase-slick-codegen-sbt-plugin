@@ -7,4 +7,4 @@ sys.props.get("plugin.version") match {
 useCoursier := false
 
 addSbtPlugin("com.github.daniel-shuy" % "sbt-scripted-scalatest" % "2.0.0")
-libraryDependencies += "org.scalatest" %% "scalatest" % "3.2.5"
+libraryDependencies += "org.scalatest" %% "scalatest" % "3.2.6"
