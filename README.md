@@ -25,7 +25,7 @@ It is skipped on subsequent runs if the Liquibase changelog file hasn't been mod
 
 Because the plugin uses the Liquibase changelog file to create tables in a temporary H2 database, there are some limitations when configuring the Liquibase changelog file. If possible, avoid using them. If not, refer below for the workarounds. Make sure to test the generated Slick database schema code thoroughly.
 
-The Liquibase version must be 3.6.1 or above, due to [sbt-liquibase](https://github.com/permutive/sbt-liquibase-plugin).
+The Liquibase version must be 3.8.0 or above, due to [sbt-liquibase](https://github.com/permutive/sbt-liquibase-plugin).
 
 ### Database-specific Preconditions
 
@@ -48,7 +48,7 @@ If database-specific SQL is used with [\\<sql>](http://www.liquibase.org/documen
 Add the following to your `project/plugins.sbt`:
 
 ```scala
-addSbtPlugin("com.github.daniel-shuy" % "sbt-liquibase-slick-codegen" % "1.0.1")
+addSbtPlugin("com.github.daniel-shuy" % "sbt-liquibase-slick-codegen" % "1.1.1")
 ```
 
 Override the `slick-codegen` dependency version with the version of Slick you are using in your project.
@@ -71,7 +71,7 @@ object Dependencies {
 
 ```scala
 // project/plugins.sbt
-addSbtPlugin("com.github.daniel-shuy" % "sbt-liquibase-slick-codegen" % "1.0.1")
+addSbtPlugin("com.github.daniel-shuy" % "sbt-liquibase-slick-codegen" % "1.1.1")
 libraryDependencies += "com.typesafe.slick" %% "slick-codegen" % Dependencies.slickVersion(scalaVersion.value)
 
 // allows build.sbt to reference Dependencies
@@ -89,8 +89,8 @@ libraryDependencies ++= Seq(
 Override the `liquibase-core` dependency version with the version of Liquibase you wise to use:
 
 ```scala
-addSbtPlugin("com.github.daniel-shuy" % "sbt-liquibase-slick-codegen" % "1.0.1")
-libraryDependencies += "org.liquibase" % "liquibase-core" % "3.6.3"
+addSbtPlugin("com.github.daniel-shuy" % "sbt-liquibase-slick-codegen" % "1.1.1")
+libraryDependencies += "org.liquibase" % "liquibase-core" % "3.10.1"
 ```
 
 ### Step 2: Enable the plugin for your project
