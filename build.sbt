@@ -49,5 +49,5 @@ def slickVersion(scalaVersion: String) =
 
 libraryDependencies ++= Seq(
   "com.typesafe.slick" %% "slick-codegen" % slickVersion(scalaVersion.value),
-  "com.h2database" % "h2" % "2.3.230"
+  "com.h2database" % "h2" % "2.3.232"
 )
